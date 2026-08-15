@@ -4,5 +4,17 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<!--
+	  Modern storyboard-free launch screen (iOS's system-level splash, analogous to
+	  Android's Theme.App.Starting). Like Android's SplashScreen API, this only supports
+	  a centered image on a background color - not a full-bleed custom layout - so
+	  CyraSplashView (shown immediately after launch, see iOSApp.swift) is what delivers
+	  the actual full-screen branded look.
+	-->
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIImageName</key>
+		<string>SplashLogo</string>
+	</dict>
 </dict>
 </plist>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sampled from assets/branding/cyra_app_icon_1024.png (the moon/flower mark) -->
+    <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="cyra_brand_purple">#6C4FD1</color>
+    <color name="cyra_brand_purple_light">#A78BFA</color>
+</resources>

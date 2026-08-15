@@ -26,6 +26,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.work.runtime)
+    implementation(libs.androidx.splashscreen)
 
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)

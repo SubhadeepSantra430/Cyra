@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      System-level splash (androidx.core.splashscreen - works consistently pre/post API 31).
+      Shown instantly at cold start, before MainActivity.onCreate() runs, using the same
+      mark as the app icon. The API only supports a centered icon on a solid background,
+      not an arbitrary full-bleed image - CyraApp's own full-screen splash Composable
+      (shown immediately after, see MainActivity.kt) is what delivers the "full screen"
+      branded look the design calls for.
+    -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/ic_launcher_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@android:style/Theme.Material.Light.NoActionBar</item>
+    </style>
+</resources>
