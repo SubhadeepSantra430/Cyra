@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "660609071105",
+    "project_id": "cyra-2bcb4",
+    "storage_bucket": "cyra-2bcb4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:660609071105:android:db4b2e04f5b1182f3ea800",
+        "android_client_info": {
+          "package_name": "subha.app.cyra"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCi_SH34SK8S5GvAK8xHvWbdAayPIXP_Mo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

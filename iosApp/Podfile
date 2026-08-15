@@ -1,0 +1,21 @@
+target 'iosApp' do
+  # Firestore pulls in gRPC-Core/gRPC-C++, which don't support dynamic frameworks
+  # cleanly (`use_frameworks!` alone fails with a missing gRPC-Core modulemap) -
+  # static linkage is Google's own documented requirement for Firestore via CocoaPods.
+  use_frameworks! :linkage => :static
+  platform :ios, '13.0'
+
+  pod 'sharedLogic', :path => '../sharedLogic'
+end
+
+# CocoaPods defaults the generated Pods.xcodeproj's own project-level deployment
+# target to 9.0 regardless of the app's `platform :ios` above, which Xcode then warns
+# about (9.0 is below the 12.0 minimum supported by current SDKs). Force every pod
+# target's deployment target to match ours.
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+    end
+  end
+end

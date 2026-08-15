@@ -1,0 +1,43 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "21a0a8cba6e502263bbea5f1ad98d89b",
+    "entities": [
+      {
+        "tableName": "sync_metadata",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`featureKey` TEXT NOT NULL, `lastSyncedAtEpochMillis` INTEGER NOT NULL, `pendingWriteCount` INTEGER NOT NULL, PRIMARY KEY(`featureKey`))",
+        "fields": [
+          {
+            "fieldPath": "featureKey",
+            "columnName": "featureKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSyncedAtEpochMillis",
+            "columnName": "lastSyncedAtEpochMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pendingWriteCount",
+            "columnName": "pendingWriteCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "featureKey"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '21a0a8cba6e502263bbea5f1ad98d89b')"
+    ]
+  }
+}

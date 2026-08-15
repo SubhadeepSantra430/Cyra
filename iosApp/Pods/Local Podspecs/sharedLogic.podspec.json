@@ -1,0 +1,48 @@
+{
+  "name": "sharedLogic",
+  "version": "1.0",
+  "homepage": "https://github.com/subha/Cyra",
+  "source": {
+    "http": ""
+  },
+  "authors": "",
+  "license": "",
+  "summary": "Cyra shared business logic",
+  "vendored_frameworks": "build/cocoapods/framework/SharedLogic.framework",
+  "libraries": "c++",
+  "platforms": {
+    "ios": "13.0"
+  },
+  "dependencies": {
+    "FirebaseAuth": [
+      "11.8.0"
+    ],
+    "FirebaseCore": [
+      "11.8.0"
+    ],
+    "FirebaseFirestore": [
+      "11.8.0"
+    ],
+    "FirebaseFirestoreInternal": [
+      "11.8.0"
+    ],
+    "FirebaseStorage": [
+      "11.8.0"
+    ]
+  },
+  "xcconfig": {
+    "ENABLE_USER_SCRIPT_SANDBOXING": "NO"
+  },
+  "pod_target_xcconfig": {
+    "KOTLIN_PROJECT_PATH": ":sharedLogic",
+    "PRODUCT_MODULE_NAME": "SharedLogic"
+  },
+  "script_phases": [
+    {
+      "name": "Build sharedLogic",
+      "execution_position": "before_compile",
+      "shell_path": "/bin/sh",
+      "script": "                if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n                    echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \"YES\"\"\n                    exit 0\n                fi\n                set -ev\n                REPO_ROOT=\"$PODS_TARGET_SRCROOT\"\n                \"$REPO_ROOT/../gradlew\" -p \"$REPO_ROOT\" $KOTLIN_PROJECT_PATH:syncFramework                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME                     -Pkotlin.native.cocoapods.archs=\"$ARCHS\"                     -Pkotlin.native.cocoapods.configuration=\"$CONFIGURATION\"\n"
+    }
+  ]
+}
