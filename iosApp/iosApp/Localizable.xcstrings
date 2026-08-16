@@ -1,0 +1,108 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Click me!" : {
+
+    },
+    "onboarding_get_started" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get Started"
+          }
+        }
+      }
+    },
+    "onboarding_next" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        }
+      }
+    },
+    "onboarding_page1_description" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Track your cycle, understand your body, and get AI-powered insights for a healthier you."
+          }
+        }
+      }
+    },
+    "onboarding_page1_title" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Health. Your Way."
+          }
+        }
+      }
+    },
+    "onboarding_page2_description" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your data is safe with us. Get personalized wellness guidance and predictions that adapt to you."
+          }
+        }
+      }
+    },
+    "onboarding_page2_title" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalized. Private. Powerful."
+          }
+        }
+      }
+    },
+    "onboarding_page3_description" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discover patterns, track progress, and build better habits with insights that help you feel your best every day."
+          }
+        }
+      }
+    },
+    "onboarding_page3_title" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Understand. Improve. Thrive."
+          }
+        }
+      }
+    },
+    "onboarding_skip" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        }
+      }
+    },
+    "SwiftUI: %@" : {
+
+    }
+  },
+  "version" : "1.0"
+}
