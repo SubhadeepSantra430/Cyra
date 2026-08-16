@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,10 +17,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import kotlinx.coroutines.delay
+import subha.app.cyra.ui.components.CyraPreviews
+import subha.app.cyra.ui.onboarding.OnboardingScreen
 import subha.app.cyra.ui.splash.CyraSplashScreen
+import subha.app.cyra.ui.theme.CyraTheme
 
 private const val SPLASH_DURATION_MILLIS = 1200L
 
@@ -36,15 +37,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            CyraRoot()
+            CyraTheme {
+                CyraRoot()
+            }
         }
     }
 }
 
 /**
- * Handles the handoff from the system splash to our own full-screen branded [SplashScreen],
- * then to the real app content. Once real navigation/auth-state exists (Auth feature),
- * this timed delay is replaced by "stay on splash until the auth-state check completes".
+ * Handles the handoff from the system splash to our own full-screen branded
+ * [CyraSplashScreen], then to onboarding, then to the (currently placeholder) app
+ * content. Once real navigation/auth-state exists (Auth feature), the splash's timed
+ * delay is replaced by "stay on splash until the auth-state check completes", and
+ * onboarding's `onFinished` will route to real auth/home instead of the placeholder.
  */
 @Composable
 fun CyraRoot() {
@@ -59,24 +64,38 @@ fun CyraRoot() {
         if (isShowingSplash) {
             CyraSplashScreen()
         } else {
-            CyraApp()
+            CyraAppFlow()
         }
     }
 }
 
 @Composable
-fun CyraApp() {
-    MaterialTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Cyra - architecture scaffolding in place")
-            }
+private fun CyraAppFlow() {
+    var onboardingComplete by remember { mutableStateOf(false) }
+
+    Crossfade(targetState = onboardingComplete, label = "onboarding-to-app") { isComplete ->
+        if (isComplete) {
+            // TODO(Auth feature): replace with real navigation once auth/home exists.
+            PlaceholderHomeScreen()
+        } else {
+            OnboardingScreen(onFinished = { onboardingComplete = true })
         }
     }
 }
 
-@Preview
 @Composable
-private fun CyraAppPreview() {
-    CyraApp()
+fun PlaceholderHomeScreen() {
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Cyra - architecture scaffolding in place")
+        }
+    }
+}
+
+@CyraPreviews
+@Composable
+private fun PlaceholderHomeScreenPreview() {
+    CyraTheme {
+        PlaceholderHomeScreen()
+    }
 }

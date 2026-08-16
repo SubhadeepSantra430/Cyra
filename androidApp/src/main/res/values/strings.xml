@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Cyra</string>
+
+    <!-- Onboarding carousel - copy transcribed directly from the reference design -->
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_get_started">Get Started</string>
+
+    <string name="onboarding_page1_title">Your Health. Your Way.</string>
+    <string name="onboarding_page1_description">Track your cycle, understand your body, and get AI-powered insights for a healthier you.</string>
+
+    <string name="onboarding_page2_title">Personalized. Private. Powerful.</string>
+    <string name="onboarding_page2_description">Your data is safe with us. Get personalized wellness guidance and predictions that adapt to you.</string>
+
+    <string name="onboarding_page3_title">Understand. Improve. Thrive.</string>
+    <string name="onboarding_page3_description">Discover patterns, track progress, and build better habits with insights that help you feel your best every day.</string>
 </resources>

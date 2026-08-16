@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Sampled from assets/branding/cyra_app_icon_1024.png (the moon/flower mark) -->
+    <!--
+      Only kept here because the adaptive-icon/splash-screen XML APIs need a plain color
+      resource, not a Compose value. Everything else in the app should use CyraTheme's
+      MaterialTheme.colorScheme (see ui/theme/Color.kt) - this is the one XML-only exception.
+    -->
     <color name="ic_launcher_background">#FFFFFF</color>
-    <color name="cyra_brand_purple">#6C4FD1</color>
-    <color name="cyra_brand_purple_light">#A78BFA</color>
 </resources>
