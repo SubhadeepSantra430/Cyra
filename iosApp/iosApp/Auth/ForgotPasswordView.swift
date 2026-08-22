@@ -4,13 +4,14 @@ import SharedLogic
 /// The minimal screen reached from Login's "Forgot password?" link - mirrors Android's
 /// `ForgotPasswordScreen.kt`. Not in the reference design, kept deliberately small.
 struct ForgotPasswordView: View {
+    let snackbarController: CyraSnackbarController
     let onNavigate: (NavigationEvent) -> Void
 
     @State private var viewModel: ForgotPasswordViewModel
     @State private var state: ForgotPasswordState
-    @EnvironmentObject private var snackbarController: CyraSnackbarController
 
-    init(onNavigate: @escaping (NavigationEvent) -> Void) {
+    init(snackbarController: CyraSnackbarController, onNavigate: @escaping (NavigationEvent) -> Void) {
+        self.snackbarController = snackbarController
         self.onNavigate = onNavigate
         let vm = provideForgotPasswordViewModel()
         _viewModel = State(initialValue: vm)

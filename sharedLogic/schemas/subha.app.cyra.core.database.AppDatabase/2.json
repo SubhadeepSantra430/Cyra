@@ -1,0 +1,154 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "268ff810de7605ddb2d43eb03f406016",
+    "entities": [
+      {
+        "tableName": "sync_metadata",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`featureKey` TEXT NOT NULL, `lastSyncedAtEpochMillis` INTEGER NOT NULL, `pendingWriteCount` INTEGER NOT NULL, PRIMARY KEY(`featureKey`))",
+        "fields": [
+          {
+            "fieldPath": "featureKey",
+            "columnName": "featureKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSyncedAtEpochMillis",
+            "columnName": "lastSyncedAtEpochMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pendingWriteCount",
+            "columnName": "pendingWriteCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "featureKey"
+          ]
+        }
+      },
+      {
+        "tableName": "profile_setup_draft",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `step` TEXT NOT NULL, `name` TEXT NOT NULL, `dateOfBirth` TEXT, `heightCm` INTEGER NOT NULL, `heightProvided` INTEGER NOT NULL, `heightUnit` TEXT NOT NULL, `weightKg` INTEGER NOT NULL, `weightProvided` INTEGER NOT NULL, `weightUnit` TEXT NOT NULL, `maritalStatus` TEXT, `lastPeriodStartDate` TEXT, `lastPeriodUnknown` INTEGER NOT NULL, `averageCycleLengthDays` TEXT NOT NULL, `averagePeriodDurationDays` TEXT NOT NULL, `cycleRegularity` TEXT NOT NULL, `updatedAtEpochMillis` INTEGER NOT NULL, PRIMARY KEY(`userId`))",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "step",
+            "columnName": "step",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateOfBirth",
+            "columnName": "dateOfBirth",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "heightCm",
+            "columnName": "heightCm",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "heightProvided",
+            "columnName": "heightProvided",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "heightUnit",
+            "columnName": "heightUnit",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weightKg",
+            "columnName": "weightKg",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weightProvided",
+            "columnName": "weightProvided",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weightUnit",
+            "columnName": "weightUnit",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maritalStatus",
+            "columnName": "maritalStatus",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastPeriodStartDate",
+            "columnName": "lastPeriodStartDate",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastPeriodUnknown",
+            "columnName": "lastPeriodUnknown",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "averageCycleLengthDays",
+            "columnName": "averageCycleLengthDays",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "averagePeriodDurationDays",
+            "columnName": "averagePeriodDurationDays",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cycleRegularity",
+            "columnName": "cycleRegularity",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAtEpochMillis",
+            "columnName": "updatedAtEpochMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "userId"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '268ff810de7605ddb2d43eb03f406016')"
+    ]
+  }
+}

@@ -1,6 +1,22 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
+    "%lld" : {
+
+    },
+    "%lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
     "auth_back_content_description" : {
       "localizations" : {
         "en" : {
@@ -139,7 +155,6 @@
       }
     },
     "auth_error_google_not_configured" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -368,6 +383,7 @@
       }
     },
     "auth_password_requirement_digit" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -378,6 +394,7 @@
       }
     },
     "auth_password_requirement_lowercase" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -388,6 +405,7 @@
       }
     },
     "auth_password_requirement_min_length" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -398,6 +416,7 @@
       }
     },
     "auth_password_requirement_special_char" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -408,6 +427,7 @@
       }
     },
     "auth_password_requirement_uppercase" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -489,6 +509,7 @@
       }
     },
     "auth_success_login" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -499,6 +520,7 @@
       }
     },
     "auth_success_signup" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -538,7 +560,9 @@
         }
       }
     },
-    "Click me!" : {},
+    "Click me!" : {
+
+    },
     "onboarding_get_started" : {
       "localizations" : {
         "en" : {
@@ -736,6 +760,7 @@
       }
     },
     "profile_setup_button_start_journey" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -746,6 +771,7 @@
       }
     },
     "profile_setup_category_about_you" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -756,6 +782,7 @@
       }
     },
     "profile_setup_category_your_cycle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -796,6 +823,7 @@
       }
     },
     "profile_setup_cycle_regularity_irregular" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -816,6 +844,7 @@
       }
     },
     "profile_setup_cycle_regularity_not_sure" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -826,6 +855,7 @@
       }
     },
     "profile_setup_cycle_regularity_regular" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -836,6 +866,7 @@
       }
     },
     "profile_setup_date_picker_cancel" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -866,6 +897,7 @@
       }
     },
     "profile_setup_error_dob_required" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -876,6 +908,7 @@
       }
     },
     "profile_setup_error_name_required" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -886,6 +919,7 @@
       }
     },
     "profile_setup_error_save_failed" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -945,22 +979,12 @@
         }
       }
     },
-    "profile_setup_last_period_dont_remember_title" : {
+    "profile_setup_last_period_dont_remember_cancel" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No worries!"
-          }
-        }
-      }
-    },
-    "profile_setup_last_period_dont_remember_message" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "It's completely fine not to remember the exact date. Once you start tracking with Cyra, we'll help you build an accurate picture over time — you can always update this later."
+            "value" : "Cancel"
           }
         }
       }
@@ -975,12 +999,22 @@
         }
       }
     },
-    "profile_setup_last_period_dont_remember_cancel" : {
+    "profile_setup_last_period_dont_remember_message" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cancel"
+            "value" : "It's completely fine not to remember the exact date. Once you start tracking with Cyra, we'll help you build an accurate picture over time — you can always update this later."
+          }
+        }
+      }
+    },
+    "profile_setup_last_period_dont_remember_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No worries!"
           }
         }
       }
@@ -1026,6 +1060,7 @@
       }
     },
     "profile_setup_marital_status_divorced" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1046,6 +1081,7 @@
       }
     },
     "profile_setup_marital_status_married" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1056,6 +1092,7 @@
       }
     },
     "profile_setup_marital_status_prefer_not_to_say" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1066,6 +1103,7 @@
       }
     },
     "profile_setup_marital_status_single" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1096,6 +1134,7 @@
       }
     },
     "profile_setup_marital_status_widowed" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1156,6 +1195,7 @@
       }
     },
     "profile_setup_success" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1205,7 +1245,9 @@
         }
       }
     },
-    "SwiftUI: %@" : {}
+    "SwiftUI: %@" : {
+
+    }
   },
   "version" : "1.0"
 }

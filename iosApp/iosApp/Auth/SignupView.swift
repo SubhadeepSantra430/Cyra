@@ -6,14 +6,15 @@ import SharedLogic
 /// `LoginView` for the shared shape (state collection, side-effect handling, both
 /// Google and Apple sign-in - iOS gets both, unlike Android's Google-only).
 struct SignupView: View {
+    let snackbarController: CyraSnackbarController
     let onNavigate: (NavigationEvent) -> Void
 
     @State private var viewModel: SignupViewModel
     @State private var state: SignupState
     @State private var appleSignInHelper = AppleSignInHelper()
-    @EnvironmentObject private var snackbarController: CyraSnackbarController
 
-    init(onNavigate: @escaping (NavigationEvent) -> Void) {
+    init(snackbarController: CyraSnackbarController, onNavigate: @escaping (NavigationEvent) -> Void) {
+        self.snackbarController = snackbarController
         self.onNavigate = onNavigate
         let vm = provideSignupViewModel()
         _viewModel = State(initialValue: vm)

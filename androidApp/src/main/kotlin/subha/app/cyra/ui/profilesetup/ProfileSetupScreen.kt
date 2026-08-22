@@ -94,6 +94,15 @@ private fun ProfileSetupScreenContent(
     onSkipClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // Briefly true right after construction, while the ViewModel's init loads a
+    // possible offline-first draft - rendering nothing here (rather than the default
+    // "Name" step) avoids a one-frame flash before a resumed session jumps to its real
+    // step. See ProfileSetupState.isLoadingDraft.
+    if (state.isLoadingDraft) {
+        Spacer(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+        return
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()

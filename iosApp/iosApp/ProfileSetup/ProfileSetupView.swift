@@ -11,14 +11,15 @@ private let totalProfileSetupSteps = 8
 /// existing Auth screens' shape (state collection, effect handling).
 struct ProfileSetupView: View {
     let userId: String
+    let snackbarController: CyraSnackbarController
     let onNavigate: (NavigationEvent) -> Void
 
     @State private var viewModel: ProfileSetupViewModel
     @State private var state: ProfileSetupState
-    @EnvironmentObject private var snackbarController: CyraSnackbarController
 
-    init(userId: String, onNavigate: @escaping (NavigationEvent) -> Void) {
+    init(userId: String, snackbarController: CyraSnackbarController, onNavigate: @escaping (NavigationEvent) -> Void) {
         self.userId = userId
+        self.snackbarController = snackbarController
         self.onNavigate = onNavigate
         let vm = provideProfileSetupViewModel(userId: userId)
         _viewModel = State(initialValue: vm)
@@ -26,6 +27,30 @@ struct ProfileSetupView: View {
     }
 
     var body: some View {
+        Group {
+            // Briefly true right after construction, while the ViewModel's init loads a
+            // possible offline-first draft - rendering nothing here (rather than the
+            // default "Name" step) avoids a one-frame flash before a resumed session
+            // jumps to its real step. See ProfileSetupState.isLoadingDraft.
+            if state.isLoadingDraft {
+                Color.cyraBackground.ignoresSafeArea()
+            } else {
+                resolvedContent
+            }
+        }
+        .task {
+            for await newState in viewModel.uiState {
+                state = newState
+            }
+        }
+        .task {
+            for await effect in viewModel.sideEffect {
+                handleProfileSetupEffect(effect, onNavigate: onNavigate, snackbarController: snackbarController)
+            }
+        }
+    }
+
+    private var resolvedContent: some View {
         VStack(spacing: 0) {
             CyraCategoryStepHeader(
                 stepNumber: Int(state.step.stepNumber),
@@ -47,16 +72,6 @@ struct ProfileSetupView: View {
                 .padding(.vertical, 16)
         }
         .background(Color.cyraBackground.ignoresSafeArea())
-        .task {
-            for await newState in viewModel.uiState {
-                state = newState
-            }
-        }
-        .task {
-            for await effect in viewModel.sideEffect {
-                handleProfileSetupEffect(effect, onNavigate: onNavigate, snackbarController: snackbarController)
-            }
-        }
     }
 
     /// Mandatory steps (and the completion screen) get one full-width button; every

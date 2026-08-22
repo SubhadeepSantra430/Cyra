@@ -78,7 +78,13 @@ struct CyraSnackbar: View {
 }
 
 private struct CyraSnackbarHostModifier: ViewModifier {
-    @EnvironmentObject private var snackbarController: CyraSnackbarController
+    // Passed in explicitly rather than read via @EnvironmentObject - the host is mounted
+    // at the very root of the view tree, on the very first body evaluation (it wraps the
+    // splash screen too), and @EnvironmentObject's environment lookup for a view/modifier
+    // that sits at the top of the hierarchy is exactly where a missed-propagation timing
+    // issue would first surface. Taking the controller as a plain @ObservedObject
+    // parameter instead makes "is it actually there" a non-question.
+    @ObservedObject var snackbarController: CyraSnackbarController
 
     func body(content: Content) -> some View {
         // Top-aligned, just below the status bar/notch - overlay respects the safe area
@@ -99,8 +105,8 @@ private struct CyraSnackbarHostModifier: ViewModifier {
 extension View {
     /// Mounted once at the app root (`CyraRootView` in `iOSApp.swift`) - overlays the
     /// current global snackbar message, if any, on top of whatever screen is showing.
-    func cyraSnackbarHost() -> some View {
-        modifier(CyraSnackbarHostModifier())
+    func cyraSnackbarHost(_ snackbarController: CyraSnackbarController) -> some View {
+        modifier(CyraSnackbarHostModifier(snackbarController: snackbarController))
     }
 }
 

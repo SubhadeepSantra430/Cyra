@@ -24,8 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
+import org.koin.compose.viewmodel.koinViewModel
 import subha.app.cyra.core.presentation.NavigationEvent
+import subha.app.cyra.core.session.AppStartupDestination
+import subha.app.cyra.core.session.AppStartupViewModel
 import subha.app.cyra.ui.auth.AuthFlow
 import subha.app.cyra.ui.components.CyraPreviews
 import subha.app.cyra.ui.components.CyraSnackbarHost
@@ -66,19 +70,23 @@ class MainActivity : ComponentActivity() {
 
 /**
  * Handles the handoff from the system splash to our own full-screen branded
- * [CyraSplashScreen], then to onboarding, then to the (currently placeholder) app
- * content. Once real navigation/auth-state exists (Auth feature), the splash's timed
- * delay is replaced by "stay on splash until the auth-state check completes", and
- * onboarding's `onFinished` will route to real auth/home instead of the placeholder.
+ * [CyraSplashScreen], then to the real app flow - [AppStartupViewModel] resolves once,
+ * offline-safe, which of onboarding/auth/profile-setup-resume/home a cold start should
+ * land on (see that class and [AppStartupDestination]). The brand splash stays up until
+ * *both* its own minimum duration AND that resolution have completed, whichever is
+ * later - a slow resolution no longer risks a jarring flash of the wrong screen.
  */
 @Composable
 fun CyraRoot() {
-    var showSplash by remember { mutableStateOf(true) }
+    val startupViewModel: AppStartupViewModel = koinViewModel()
+    val destination by startupViewModel.destination.collectAsStateWithLifecycle()
+    var minimumSplashDurationElapsed by remember { mutableStateOf(false) }
+    val showSplash = !minimumSplashDurationElapsed || destination == null
     val snackbarController = rememberCyraSnackbarController()
 
     LaunchedEffect(Unit) {
         delay(SPLASH_DURATION_MILLIS)
-        showSplash = false
+        minimumSplashDurationElapsed = true
     }
 
     // Provided once, here at the root, so any screen further down can show a global
@@ -90,7 +98,8 @@ fun CyraRoot() {
                 if (isShowingSplash) {
                     CyraSplashScreen()
                 } else {
-                    CyraAppFlow()
+                    // Safe: showSplash is only false once destination has resolved.
+                    CyraAppFlow(initialDestination = destination!!)
                 }
             }
             CyraSnackbarHost(
@@ -103,33 +112,36 @@ fun CyraRoot() {
     }
 }
 
+/**
+ * [initialDestination] is [AppStartupViewModel]'s one-shot cold-start decision;
+ * [override] is local, in-session state for the transitions that happen *afterward*
+ * (onboarding finishes, auth completes, profile setup finishes) - the startup check
+ * itself only needs to run once per launch.
+ */
 @Composable
-private fun CyraAppFlow() {
-    var onboardingComplete by remember { mutableStateOf(false) }
-    // TODO(Auth feature): replace with a real session check (e.g. FirebaseClients.auth
-    // .currentUser != null) once app-start persistence exists.
-    var isAuthenticated by remember { mutableStateOf(false) }
-    // Non-null while a brand-new account is running the post-signup profile-setup flow -
-    // see AuthFlow's NavigationEvent.NavigateToOnboarding handling.
-    var profileSetupUserId by remember { mutableStateOf<String?>(null) }
+private fun CyraAppFlow(
+    initialDestination: AppStartupDestination,
+    startupViewModel: AppStartupViewModel = koinViewModel(),
+) {
+    var override by remember { mutableStateOf<AppStartupDestination?>(null) }
 
-    when {
-        !onboardingComplete -> OnboardingScreen(onFinished = { onboardingComplete = true })
-        profileSetupUserId != null -> ProfileSetupScreen(
-            userId = profileSetupUserId!!,
+    when (val destination = override ?: initialDestination) {
+        AppStartupDestination.NeedsOnboardingCarousel -> OnboardingScreen(onFinished = {
+            startupViewModel.markOnboardingCarouselSeen()
+            override = AppStartupDestination.NeedsAuth
+        })
+        is AppStartupDestination.NeedsProfileSetup -> ProfileSetupScreen(
+            userId = destination.userId,
             onNavigate = { event ->
-                if (event is NavigationEvent.NavigateToHome) {
-                    profileSetupUserId = null
-                    isAuthenticated = true
-                }
+                if (event is NavigationEvent.NavigateToHome) override = AppStartupDestination.Home
             },
         )
-        !isAuthenticated -> AuthFlow(
-            onAuthenticated = { isAuthenticated = true },
-            onExitAuth = { onboardingComplete = false },
-            onNeedsProfileSetup = { userId -> profileSetupUserId = userId },
+        AppStartupDestination.NeedsAuth -> AuthFlow(
+            onAuthenticated = { override = AppStartupDestination.Home },
+            onExitAuth = { override = AppStartupDestination.NeedsOnboardingCarousel },
+            onNeedsProfileSetup = { userId -> override = AppStartupDestination.NeedsProfileSetup(userId) },
         )
-        else -> PlaceholderHomeScreen()
+        AppStartupDestination.Home -> PlaceholderHomeScreen()
     }
 }
 

@@ -1,12 +1,21 @@
 package subha.app.cyra.feature.profilesetup.presentation
 
 import androidx.lifecycle.viewModelScope
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import subha.app.cyra.core.datastore.AppSettings
 import subha.app.cyra.core.presentation.BaseViewModel
 import subha.app.cyra.core.presentation.NavigationEvent
 import subha.app.cyra.feature.auth.domain.errorMessageKeyOrNull
 import subha.app.cyra.feature.profilesetup.data.ProfileRepository
+import subha.app.cyra.feature.profilesetup.data.ProfileSetupDraftRepository
 import subha.app.cyra.feature.profilesetup.domain.CycleRegularity
 import subha.app.cyra.feature.profilesetup.domain.HeightUnit
 import subha.app.cyra.feature.profilesetup.domain.MaritalStatus
@@ -24,11 +33,53 @@ import subha.app.cyra.feature.profilesetup.domain.WeightUnit
  * `NavigationEvent.NavigateToOnboarding(userId)`) rather than read from
  * `AuthRepository.currentUserId` here, so this ViewModel doesn't need an Auth
  * dependency just to know who it's saving for.
+ *
+ * Offline-first: every answer (and the current [ProfileSetupState.step]) is mirrored
+ * into [ProfileSetupDraftRepository] as the user progresses, so the flow survives a
+ * process death/app restart and resumes exactly where it left off - see [init] and
+ * [startDraftAutoSave]. The single Firestore write stays exactly as it was: one
+ * `ProfileRepository.saveProfile` call, only on [submitProfile] (the last step's "Start
+ * My Journey").
  */
 class ProfileSetupViewModel(
     private val userId: String,
     private val repository: ProfileRepository,
+    private val draftRepository: ProfileSetupDraftRepository,
+    private val appSettings: AppSettings,
 ) : BaseViewModel<ProfileSetupState, ProfileSetupEffect>(ProfileSetupState()) {
+
+    init {
+        viewModelScope.launch {
+            val draft = draftRepository.loadDraft(userId)
+            if (draft != null) {
+                setState { draft }
+            } else {
+                setState { copy(isLoadingDraft = false) }
+            }
+            // Started only after the load above resolves - starting it earlier would
+            // let it persist the blank default state ahead of (or racing) the real draft.
+            startDraftAutoSave()
+        }
+    }
+
+    /**
+     * One pipeline observing [uiState] rather than a `saveDraft(...)` call appended to
+     * every `onXChanged`/`onSkipClicked` - covers every current and future mutator with
+     * no per-call-site upkeep, and the debounce absorbs slider-drag-frequency updates
+     * ([onHeightChanged]/[onWeightChanged] back a `Slider`'s continuous `onValueChange`)
+     * for free. [drop] skips the just-loaded/seeded value this collector sees
+     * immediately on subscribing - that one is already on disk (or is the correct
+     * "nothing to save yet" blank state), re-saving it here would be a no-op at best.
+     */
+    @OptIn(FlowPreview::class) // debounce() - stable in practice, still preview-annotated upstream
+    private fun startDraftAutoSave() {
+        uiState
+            .drop(1)
+            .debounce(300.milliseconds)
+            .distinctUntilChanged()
+            .onEach { draftRepository.saveDraft(userId, it) }
+            .launchIn(viewModelScope)
+    }
 
     fun onNameChanged(value: String) = setState {
         copy(name = value, nameError = if (submitAttempted) ProfileSetupValidators.validateName(value).errorMessageKeyOrNull() else null)
@@ -130,6 +181,11 @@ class ProfileSetupViewModel(
         viewModelScope.launch {
             repository.saveProfile(userId, currentState)
                 .onSuccess {
+                    // Local draft is only cleared once the remote write actually
+                    // succeeds - never optimistically, so a failed/interrupted submit
+                    // never loses the user's answers.
+                    draftRepository.clearDraft(userId)
+                    appSettings.isProfileSetupCompleted = true
                     emitEffect(ProfileSetupEffect.ShowSuccess("profile_setup_success"))
                     emitEffect(ProfileSetupEffect.Navigate(NavigationEvent.NavigateToHome))
                 }

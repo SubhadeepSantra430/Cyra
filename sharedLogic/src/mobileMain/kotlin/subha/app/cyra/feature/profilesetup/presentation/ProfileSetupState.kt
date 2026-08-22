@@ -55,6 +55,11 @@ data class ProfileSetupState(
     val cycleRegularity: CycleRegularity = CycleRegularity.NotSure,
     val submitAttempted: Boolean = false,
     val isSubmitting: Boolean = false,
+    // Transient - true only for the brief async window while ProfileSetupViewModel's
+    // init loads a possible offline-first draft (see ProfileSetupDraftRepository).
+    // Defaults true so the UI can render nothing rather than flash "Name" for a frame
+    // before a resumed draft jumps to its real step. Never persisted.
+    val isLoadingDraft: Boolean = true,
 ) {
     /** Name, Birthday and Last Period are the flow's mandatory, single-button steps. */
     val isPrimaryButtonEnabled: Boolean

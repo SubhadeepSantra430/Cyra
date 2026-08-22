@@ -5,6 +5,7 @@ import SharedLogic
 /// into either a destination change or one of the two flow-level callbacks - mirrors
 /// Android's `AuthFlow.kt`.
 struct AuthFlowView: View {
+    let snackbarController: CyraSnackbarController
     let onAuthenticated: () -> Void
     let onExitAuth: () -> Void
     let onNeedsProfileSetup: (_ userId: String) -> Void
@@ -15,11 +16,11 @@ struct AuthFlowView: View {
         Group {
             switch destination {
             case .login:
-                LoginView(onNavigate: handleNavigation)
+                LoginView(snackbarController: snackbarController, onNavigate: handleNavigation)
             case .signup:
-                SignupView(onNavigate: handleNavigation)
+                SignupView(snackbarController: snackbarController, onNavigate: handleNavigation)
             case .forgotPassword:
-                ForgotPasswordView(onNavigate: handleNavigation)
+                ForgotPasswordView(snackbarController: snackbarController, onNavigate: handleNavigation)
             }
         }
         .animation(.easeInOut(duration: 0.2), value: destination)

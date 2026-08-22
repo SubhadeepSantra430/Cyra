@@ -24,11 +24,24 @@ class AppSettings(
         private const val KEY_BIOMETRIC_ENABLED = "biometric_enabled"
         private const val KEY_THEME = "theme_mode" // "light" | "dark" | "system"
         private const val KEY_LAST_SYNCED_AT = "last_synced_at_epoch_millis"
+        private const val KEY_PROFILE_SETUP_COMPLETED = "profile_setup_completed"
     }
 
     var isOnboarded: Boolean
         get() = settings.getBoolean(KEY_IS_ONBOARDED, false)
         set(value) = settings.putBoolean(KEY_IS_ONBOARDED, value)
+
+    /**
+     * The fast, offline-safe "did this user finish profile setup" check `SessionManager`
+     * gates on at startup - set once `ProfileSetupViewModel.submitProfile()`'s Firestore
+     * write actually succeeds (`ProfileRepository.saveProfile`'s `ProfileDocument` also
+     * carries its own `profileSetupCompleted` field server-side; this is the local
+     * cache of that same fact, not a duplicate source of truth for auth/session data -
+     * see this class's own doc comment above).
+     */
+    var isProfileSetupCompleted: Boolean
+        get() = settings.getBoolean(KEY_PROFILE_SETUP_COMPLETED, false)
+        set(value) = settings.putBoolean(KEY_PROFILE_SETUP_COMPLETED, value)
 
     var isBiometricEnabled: Boolean
         get() = settings.getBoolean(KEY_BIOMETRIC_ENABLED, false)

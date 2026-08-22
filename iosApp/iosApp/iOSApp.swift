@@ -22,65 +22,78 @@ struct iOSApp: App {
 
 private let splashDurationSeconds: UInt64 = 1_200_000_000
 
-/// Handles the handoff from CyraSplashView to onboarding, then to the (currently
-/// placeholder) app content - mirrors `CyraRoot`/`CyraAppFlow` on Android. Once real
-/// navigation/auth-state exists (Auth feature), the splash's timed delay is replaced by
-/// "stay on splash until the auth-state check completes", and onboarding's
-/// `onFinished` will route to real auth/home instead of the placeholder.
+/// Handles the handoff from CyraSplashView to the real app flow - `AppStartupViewModel`
+/// resolves once, offline-safe, which of onboarding/auth/profile-setup-resume/home a
+/// cold start should land on (see that class and `AppStartupDestination` on the Kotlin
+/// side). The brand splash stays up until *both* its own minimum duration AND that
+/// resolution have completed, whichever is later - mirrors Android's `CyraRoot`.
 struct CyraRootView: View {
-    @State private var showSplash = true
-    @State private var onboardingComplete = false
-    // TODO(Auth feature): replace with a real session check (e.g. FirebaseClients.shared
-    // .auth.currentUser != nil) once app-start persistence exists.
-    @State private var isAuthenticated = false
-    // Non-nil while a brand-new account is running the post-signup profile-setup flow -
-    // see AuthFlowView's NavigationEventNavigateToOnboarding handling.
-    @State private var profileSetupUserId: String?
+    @State private var minimumSplashDurationElapsed = false
+    @State private var startupViewModel = provideAppStartupViewModel()
+    @State private var destination: AppStartupDestination?
+    // In-session state for the transitions that happen *after* the initial check
+    // (onboarding finishes, auth completes, profile setup finishes) - the startup
+    // check itself only needs to run once per launch.
+    @State private var override: AppStartupDestination?
     // Owns the app-wide snackbar queue - provided here, at the root, so any screen
     // further down can show a global success/error message (see CyraSnackbar.swift)
     // without threading a controller reference through every navigation call.
     @StateObject private var snackbarController = CyraSnackbarController()
+
+    private var showSplash: Bool { !minimumSplashDurationElapsed || destination == nil }
+    private var resolvedDestination: AppStartupDestination? { override ?? destination }
 
     var body: some View {
         ZStack {
             if showSplash {
                 CyraSplashView()
                     .transition(.opacity)
-            } else if !onboardingComplete {
-                OnboardingView(onFinished: { onboardingComplete = true })
-                    .transition(.opacity)
-            } else if let userId = profileSetupUserId {
-                ProfileSetupView(
-                    userId: userId,
-                    onNavigate: { event in
-                        if event is NavigationEventNavigateToHome {
-                            profileSetupUserId = nil
-                            isAuthenticated = true
-                        }
-                    },
-                )
-                .transition(.opacity)
-            } else if !isAuthenticated {
-                AuthFlowView(
-                    onAuthenticated: { isAuthenticated = true },
-                    onExitAuth: { onboardingComplete = false },
-                    onNeedsProfileSetup: { userId in profileSetupUserId = userId },
-                )
-                .transition(.opacity)
-            } else {
-                ContentView()
+            } else if let destination = resolvedDestination {
+                destinationView(for: destination)
                     .transition(.opacity)
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showSplash)
-        .animation(.easeInOut(duration: 0.3), value: onboardingComplete)
-        .animation(.easeInOut(duration: 0.3), value: isAuthenticated)
         .task {
             try? await Task.sleep(nanoseconds: splashDurationSeconds)
-            showSplash = false
+            minimumSplashDurationElapsed = true
+        }
+        .task {
+            for await newDestination in startupViewModel.destination {
+                destination = newDestination
+            }
         }
         .cyraThemed()
-        .environmentObject(snackbarController)
-        .cyraSnackbarHost()
+        .cyraSnackbarHost(snackbarController)
+    }
+
+    @ViewBuilder
+    private func destinationView(for destination: AppStartupDestination) -> some View {
+        switch destination {
+        case is AppStartupDestinationNeedsOnboardingCarousel:
+            OnboardingView(onFinished: {
+                startupViewModel.markOnboardingCarouselSeen()
+                override = AppStartupDestinationNeedsAuth.shared
+            })
+        case let needsProfileSetup as AppStartupDestinationNeedsProfileSetup:
+            ProfileSetupView(
+                userId: needsProfileSetup.userId,
+                snackbarController: snackbarController,
+                onNavigate: { event in
+                    if event is NavigationEventNavigateToHome {
+                        override = AppStartupDestinationHome.shared
+                    }
+                },
+            )
+        case is AppStartupDestinationNeedsAuth:
+            AuthFlowView(
+                snackbarController: snackbarController,
+                onAuthenticated: { override = AppStartupDestinationHome.shared },
+                onExitAuth: { override = AppStartupDestinationNeedsOnboardingCarousel.shared },
+                onNeedsProfileSetup: { userId in override = AppStartupDestinationNeedsProfileSetup(userId: userId) },
+            )
+        default: // AppStartupDestinationHome
+            ContentView()
+        }
     }
 }

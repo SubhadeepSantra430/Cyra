@@ -6,14 +6,15 @@ import SharedLogic
 /// events. Shows BOTH Google and Apple sign-in (Apple is iOS-only, per product
 /// decision - Android is Google-only).
 struct LoginView: View {
+    let snackbarController: CyraSnackbarController
     let onNavigate: (NavigationEvent) -> Void
 
     @State private var viewModel: LoginViewModel
     @State private var state: LoginState
     @State private var appleSignInHelper = AppleSignInHelper()
-    @EnvironmentObject private var snackbarController: CyraSnackbarController
 
-    init(onNavigate: @escaping (NavigationEvent) -> Void) {
+    init(snackbarController: CyraSnackbarController, onNavigate: @escaping (NavigationEvent) -> Void) {
+        self.snackbarController = snackbarController
         self.onNavigate = onNavigate
         let vm = provideLoginViewModel()
         _viewModel = State(initialValue: vm)

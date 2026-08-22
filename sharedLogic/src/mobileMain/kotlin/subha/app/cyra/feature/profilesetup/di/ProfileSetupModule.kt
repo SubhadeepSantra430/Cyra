@@ -5,6 +5,7 @@ import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
 import subha.app.cyra.feature.profilesetup.data.ProfileRepository
+import subha.app.cyra.feature.profilesetup.data.ProfileSetupDraftRepository
 import subha.app.cyra.feature.profilesetup.presentation.ProfileSetupViewModel
 
 /**
@@ -14,7 +15,8 @@ import subha.app.cyra.feature.profilesetup.presentation.ProfileSetupViewModel
  */
 val profileSetupModule = module {
     single { ProfileRepository() }
-    viewModel { (userId: String) -> ProfileSetupViewModel(userId, get()) }
+    single { ProfileSetupDraftRepository(get()) }
+    viewModel { (userId: String) -> ProfileSetupViewModel(userId, get(), get(), get()) }
 }
 
 // Swift can't call reified generic `get<T>()` (see KoinHelper.kt) or pass Koin
