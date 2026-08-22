@@ -12,5 +12,7 @@ sealed interface NavigationEvent {
     data object NavigateBack : NavigationEvent
     data object NavigateToHome : NavigationEvent
     data object NavigateToLogin : NavigationEvent
+    data object NavigateToSignup : NavigationEvent
+    data object NavigateToForgotPassword : NavigationEvent
     data class NavigateToOnboarding(val userId: String) : NavigationEvent
 }

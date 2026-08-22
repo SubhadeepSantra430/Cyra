@@ -1,6 +1,5 @@
 package subha.app.cyra.ui.components
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,11 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import subha.app.cyra.ui.theme.CyraTheme
@@ -55,24 +49,8 @@ fun CyraPrimaryButton(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(text = text, style = MaterialTheme.typography.labelLarge)
-            Chevron(color = MaterialTheme.colorScheme.onPrimary)
+            Chevron(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(ChevronDefaultSize))
         }
-    }
-}
-
-@Composable
-private fun Chevron(color: Color) {
-    Canvas(modifier = Modifier.size(14.dp)) {
-        val path = Path().apply {
-            moveTo(size.width * 0.25f, 0f)
-            lineTo(size.width * 0.75f, size.height / 2f)
-            lineTo(size.width * 0.25f, size.height)
-        }
-        drawPath(
-            path = path,
-            color = color,
-            style = Stroke(width = size.width * 0.18f, cap = StrokeCap.Round, join = StrokeJoin.Round),
-        )
     }
 }
 

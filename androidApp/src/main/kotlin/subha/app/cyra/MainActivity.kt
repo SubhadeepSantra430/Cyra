@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import kotlinx.coroutines.delay
+import subha.app.cyra.ui.auth.AuthFlow
 import subha.app.cyra.ui.components.CyraPreviews
 import subha.app.cyra.ui.onboarding.OnboardingScreen
 import subha.app.cyra.ui.splash.CyraSplashScreen
@@ -72,14 +73,17 @@ fun CyraRoot() {
 @Composable
 private fun CyraAppFlow() {
     var onboardingComplete by remember { mutableStateOf(false) }
+    // TODO(Auth feature): replace with a real session check (e.g. FirebaseClients.auth
+    // .currentUser != null) once app-start persistence exists.
+    var isAuthenticated by remember { mutableStateOf(false) }
 
-    Crossfade(targetState = onboardingComplete, label = "onboarding-to-app") { isComplete ->
-        if (isComplete) {
-            // TODO(Auth feature): replace with real navigation once auth/home exists.
-            PlaceholderHomeScreen()
-        } else {
-            OnboardingScreen(onFinished = { onboardingComplete = true })
-        }
+    when {
+        !onboardingComplete -> OnboardingScreen(onFinished = { onboardingComplete = true })
+        !isAuthenticated -> AuthFlow(
+            onAuthenticated = { isAuthenticated = true },
+            onExitAuth = { onboardingComplete = false },
+        )
+        else -> PlaceholderHomeScreen()
     }
 }
 

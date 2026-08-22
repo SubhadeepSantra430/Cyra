@@ -14,4 +14,61 @@
 
     <string name="onboarding_page3_title">Understand. Improve. Thrive.</string>
     <string name="onboarding_page3_description">Discover patterns, track progress, and build better habits with insights that help you feel your best every day.</string>
+
+    <!-- Auth - Login / Signup / Forgot Password -->
+    <string name="auth_login_title">Welcome back</string>
+    <string name="auth_login_subtitle">Log in to continue your health journey</string>
+    <string name="auth_signup_title">Create your account</string>
+    <string name="auth_signup_subtitle">Start your personalized health journey</string>
+    <string name="auth_forgot_password_title">Reset your password</string>
+    <string name="auth_forgot_password_subtitle">Enter your email and we\'ll send you a link to reset your password.</string>
+    <string name="auth_forgot_password_sent_title">Check your email</string>
+    <string name="auth_forgot_password_sent_message">We\'ve sent a password reset link to your email address.</string>
+
+    <string name="auth_email_placeholder">Email</string>
+    <string name="auth_password_placeholder">Password</string>
+    <string name="auth_confirm_password_placeholder">Confirm password</string>
+
+    <string name="auth_log_in_button">Log In</string>
+    <string name="auth_sign_up_button">Sign Up</string>
+    <string name="auth_forgot_password_link">Forgot password?</string>
+    <string name="auth_send_reset_link_button">Send Reset Link</string>
+    <string name="auth_back_to_login_button">Back to Log In</string>
+    <string name="auth_or_continue_with">or continue with</string>
+    <string name="auth_continue_with_google">Continue with Google</string>
+    <string name="auth_continue_with_apple">Continue with Apple</string>
+    <string name="auth_no_account_prefix">Don\'t have an account? </string>
+    <string name="auth_signup_link">Sign up</string>
+    <string name="auth_has_account_prefix">Already have an account? </string>
+    <string name="auth_login_link">Log in</string>
+    <string name="auth_terms_prefix">I agree to the </string>
+    <string name="auth_terms_link">Terms of Service</string>
+    <string name="auth_terms_middle"> and </string>
+    <string name="auth_privacy_link">Privacy Policy</string>
+
+    <string name="auth_back_content_description">Back</string>
+    <string name="auth_show_password_content_description">Show password</string>
+    <string name="auth_hide_password_content_description">Hide password</string>
+
+    <!-- Error message keys - looked up by AuthValidators/AuthErrorMapper's messageKey -->
+    <string name="auth_error_email_required">Email is required</string>
+    <string name="auth_error_email_invalid">Enter a valid email address</string>
+    <string name="auth_error_password_required">Password is required</string>
+    <string name="auth_error_password_weak">Password must be at least 8 characters with uppercase, lowercase, a number, and a special character</string>
+    <string name="auth_error_confirm_password_required">Please confirm your password</string>
+    <string name="auth_error_passwords_mismatch">Passwords don\'t match</string>
+    <string name="auth_error_terms_required">Please agree to the Terms of Service and Privacy Policy</string>
+    <string name="auth_error_email_in_use">An account already exists with this email</string>
+    <string name="auth_error_invalid_credentials">Incorrect email or password</string>
+    <string name="auth_error_recent_login_required">Please log in again to continue</string>
+    <string name="auth_error_network">Network error. Check your connection and try again</string>
+    <string name="auth_error_generic">Something went wrong. Please try again</string>
+    <string name="auth_error_google_failed">Google sign-in failed. Please try again</string>
+    <string name="auth_error_google_not_configured">Google sign-in isn\'t set up yet</string>
+    <string name="auth_error_apple_failed">Apple sign-in failed. Please try again</string>
+
+    <!-- Google Sign-In (Credential Manager) web client ID - placeholder until Google
+         Sign-In is enabled for this app in Firebase console; NOT the auto-generated
+         `default_web_client_id` resource, which doesn't exist until then. -->
+    <string name="google_web_client_id" translatable="false">REPLACE_WITH_FIREBASE_WEB_CLIENT_ID</string>
 </resources>

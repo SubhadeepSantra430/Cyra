@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
  * `VMStateObserver` wrapper (see iosApp/App/ViewModelWrapper.swift) must call
  * `viewModel.clear()`/equivalent from its own `deinit` once that wrapper exists.
  */
-abstract class BaseViewModel<State, Effect>(initialState: State) : ViewModel() {
+abstract class BaseViewModel<State : Any, Effect : Any>(initialState: State) : ViewModel() {
 
     private val _uiState = MutableStateFlow(initialState)
     val uiState: StateFlow<State> = _uiState.asStateFlow()
