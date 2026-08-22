@@ -42,10 +42,7 @@ struct ProfileSetupView: View {
                     .padding(.vertical, 24)
             }
 
-            Button(String(localized: String.LocalizationValue(state.primaryButtonLabelKey)), action: viewModel.onPrimaryButtonClicked)
-                .buttonStyle(CyraPrimaryButtonStyle(isEnabled: state.isPrimaryButtonEnabled && !state.isSubmitting))
-                .frame(maxWidth: .infinity)
-                .disabled(!state.isPrimaryButtonEnabled || state.isSubmitting)
+            bottomButtons
                 .padding(.horizontal, 24)
                 .padding(.vertical, 16)
         }
@@ -59,6 +56,28 @@ struct ProfileSetupView: View {
             for await effect in viewModel.sideEffect {
                 handleProfileSetupEffect(effect, onNavigate: onNavigate, snackbarController: snackbarController)
             }
+        }
+    }
+
+    /// Mandatory steps (and the completion screen) get one full-width button; every
+    /// optional step gets a "Skip" (left) + "Next" (right) pair instead, matching the
+    /// onboarding carousel's own Skip/Next convention - mirrors Android's
+    /// `ProfileSetupScreen.kt`'s bottom-button section.
+    @ViewBuilder
+    private var bottomButtons: some View {
+        if state.showDualButtons {
+            HStack {
+                Button(String(localized: "profile_setup_button_skip"), action: viewModel.onSkipClicked)
+                    .buttonStyle(CyraSkipButtonStyle())
+                Spacer()
+                Button(String(localized: "profile_setup_button_next"), action: viewModel.onNextClicked)
+                    .buttonStyle(CyraPrimaryButtonStyle())
+            }
+        } else {
+            Button(String(localized: String.LocalizationValue(state.primaryButtonLabelKey)), action: viewModel.onNextClicked)
+                .buttonStyle(CyraPrimaryButtonStyle(isEnabled: state.isPrimaryButtonEnabled && !state.isSubmitting))
+                .frame(maxWidth: .infinity)
+                .disabled(!state.isPrimaryButtonEnabled || state.isSubmitting)
         }
     }
 
@@ -79,7 +98,7 @@ struct ProfileSetupView: View {
             ProfileSetupLastPeriodStep(
                 lastPeriodStartDate: state.lastPeriodStartDate,
                 onDateChange: viewModel.onLastPeriodStartDateChanged,
-                onDontRememberClick: viewModel.onPrimaryButtonClicked,
+                onDontRememberConfirmed: viewModel.onLastPeriodUnknownConfirmed,
             )
         case .cycleInfo:
             ProfileSetupCycleInfoStep(

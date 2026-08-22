@@ -117,10 +117,14 @@
     <string name="profile_setup_marital_status_prefer_not_to_say">Prefer not to say</string>
 
     <string name="profile_setup_last_period_title">When did your last period start?</string>
-    <string name="profile_setup_last_period_subtitle">This helps us predict your cycle. Not sure? You can skip this.</string>
-    <string name="profile_setup_last_period_label">Last period start date (Optional)</string>
+    <string name="profile_setup_last_period_subtitle">This helps us predict your cycle. Not sure? Just let us know.</string>
+    <string name="profile_setup_last_period_label">Last period start date</string>
     <string name="profile_setup_last_period_placeholder">Select date</string>
     <string name="profile_setup_last_period_dont_remember">I don\'t remember</string>
+    <string name="profile_setup_last_period_dont_remember_title">No worries!</string>
+    <string name="profile_setup_last_period_dont_remember_message">It\'s completely fine not to remember the exact date. Once you start tracking with Cyra, we\'ll help you build an accurate picture over time — you can always update this later.</string>
+    <string name="profile_setup_last_period_dont_remember_confirm">OK, Continue</string>
+    <string name="profile_setup_last_period_dont_remember_cancel">Cancel</string>
 
     <string name="profile_setup_cycle_info_title">Tell us more about your cycle</string>
     <string name="profile_setup_cycle_info_subtitle">This information is optional and can be updated later.</string>

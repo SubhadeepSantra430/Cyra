@@ -3,8 +3,10 @@ import SwiftUI
 /// The header shared by every step of the profile-setup flow - mirrors Android's
 /// `CyraCategoryStepHeader.kt`. An optional `CyraBackButton` on the left, a plain-text
 /// category title centered between it and the step counter (no chip/pill background -
-/// a first draft used one and it read as a badge rather than a title), and a linear
-/// progress bar underneath.
+/// a first draft used one and it read as a badge rather than a title), and a segmented
+/// (one bar per step) progress indicator underneath, not a single continuous bar - each
+/// completed/current step reads as its own filled segment, matching the reference
+/// design more closely than a smooth fill does.
 ///
 /// `category`/`onBackClick` are both optional - the first step in a flow typically
 /// hides the back button (nothing to go back to), and a completion screen typically has
@@ -35,16 +37,13 @@ struct CyraCategoryStepHeader: View {
                     .foregroundColor(.cyraOnSurfaceVariant)
                     .frame(minWidth: 44, alignment: .trailing)
             }
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
+            HStack(spacing: 4) {
+                ForEach(0..<totalSteps, id: \.self) { index in
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.cyraOutline.opacity(0.4))
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.cyraPrimary)
-                        .frame(width: geometry.size.width * CGFloat(stepNumber) / CGFloat(totalSteps))
+                        .fill(index < stepNumber ? Color.cyraPrimary : Color.cyraOutline.opacity(0.4))
+                        .frame(height: 4)
                 }
             }
-            .frame(height: 4)
         }
     }
 }

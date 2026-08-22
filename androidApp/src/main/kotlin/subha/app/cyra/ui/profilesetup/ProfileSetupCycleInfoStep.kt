@@ -18,7 +18,7 @@ import subha.app.cyra.ui.components.CyraTextField
 fun ProfileSetupCycleInfoStep(
     averageCycleLengthDays: String,
     averagePeriodDurationDays: String,
-    cycleRegularity: CycleRegularity?,
+    cycleRegularity: CycleRegularity,
     onCycleLengthChange: (String) -> Unit,
     onPeriodDurationChange: (String) -> Unit,
     onCycleRegularityChange: (CycleRegularity) -> Unit,
@@ -58,7 +58,7 @@ fun ProfileSetupCycleInfoStep(
         val options = CycleRegularity.entries
         CyraSegmentedToggle(
             options = options.map { stringResource(profileSetupMessageKeyToStringRes(it.messageKey)) },
-            selectedIndex = cycleRegularity?.let { options.indexOf(it) } ?: -1,
+            selectedIndex = options.indexOf(cycleRegularity),
             onOptionSelected = { index -> onCycleRegularityChange(options[index]) },
         )
     }

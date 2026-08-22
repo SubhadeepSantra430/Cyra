@@ -1,7 +1,9 @@
 package subha.app.cyra.ui.profilesetup
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.datetime.LocalDate
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import subha.app.cyra.R
 import subha.app.cyra.core.presentation.NavigationEvent
 import subha.app.cyra.feature.profilesetup.domain.CycleRegularity
 import subha.app.cyra.feature.profilesetup.domain.HeightUnit
@@ -30,6 +33,7 @@ import subha.app.cyra.feature.profilesetup.presentation.ProfileSetupState
 import subha.app.cyra.feature.profilesetup.presentation.ProfileSetupViewModel
 import subha.app.cyra.ui.components.CyraCategoryStepHeader
 import subha.app.cyra.ui.components.CyraPrimaryButton
+import subha.app.cyra.ui.components.CyraTextButton
 
 /**
  * The post-signup profile-setup flow - one screen, one [ProfileSetupViewModel], the
@@ -60,10 +64,12 @@ fun ProfileSetupScreen(
         onWeightUnitChange = viewModel::onWeightUnitToggled,
         onMaritalStatusSelected = viewModel::onMaritalStatusSelected,
         onLastPeriodDateChange = viewModel::onLastPeriodStartDateChanged,
+        onDontRememberConfirmed = viewModel::onLastPeriodUnknownConfirmed,
         onCycleLengthChange = viewModel::onAverageCycleLengthChanged,
         onPeriodDurationChange = viewModel::onAveragePeriodDurationChanged,
         onCycleRegularitySelected = viewModel::onCycleRegularitySelected,
-        onPrimaryButtonClick = viewModel::onPrimaryButtonClicked,
+        onNextClick = viewModel::onNextClicked,
+        onSkipClick = viewModel::onSkipClicked,
         modifier = modifier,
     )
 }
@@ -80,10 +86,12 @@ private fun ProfileSetupScreenContent(
     onWeightUnitChange: (WeightUnit) -> Unit,
     onMaritalStatusSelected: (MaritalStatus) -> Unit,
     onLastPeriodDateChange: (LocalDate) -> Unit,
+    onDontRememberConfirmed: () -> Unit,
     onCycleLengthChange: (String) -> Unit,
     onPeriodDurationChange: (String) -> Unit,
     onCycleRegularitySelected: (CycleRegularity) -> Unit,
-    onPrimaryButtonClick: () -> Unit,
+    onNextClick: () -> Unit,
+    onSkipClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -112,7 +120,7 @@ private fun ProfileSetupScreenContent(
                 ProfileSetupStep.Height -> ProfileSetupHeightStep(state.heightCm, state.heightUnit, onHeightChange, onHeightUnitChange)
                 ProfileSetupStep.Weight -> ProfileSetupWeightStep(state.weightKg, state.weightUnit, onWeightChange, onWeightUnitChange)
                 ProfileSetupStep.MaritalStatus -> ProfileSetupMaritalStatusStep(state.maritalStatus, onMaritalStatusSelected)
-                ProfileSetupStep.LastPeriod -> ProfileSetupLastPeriodStep(state.lastPeriodStartDate, onLastPeriodDateChange, onPrimaryButtonClick)
+                ProfileSetupStep.LastPeriod -> ProfileSetupLastPeriodStep(state.lastPeriodStartDate, onLastPeriodDateChange, onDontRememberConfirmed)
                 ProfileSetupStep.CycleInfo -> ProfileSetupCycleInfoStep(
                     state.averageCycleLengthDays,
                     state.averagePeriodDurationDays,
@@ -126,12 +134,19 @@ private fun ProfileSetupScreenContent(
         }
 
         Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
-            CyraPrimaryButton(
-                text = stringResource(profileSetupMessageKeyToStringRes(state.primaryButtonLabelKey)),
-                onClick = onPrimaryButtonClick,
-                enabled = state.isPrimaryButtonEnabled && !state.isSubmitting,
-                modifier = Modifier.fillMaxWidth(),
-            )
+            if (state.showDualButtons) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    CyraTextButton(text = stringResource(R.string.profile_setup_button_skip), onClick = onSkipClick)
+                    CyraPrimaryButton(text = stringResource(R.string.profile_setup_button_next), onClick = onNextClick)
+                }
+            } else {
+                CyraPrimaryButton(
+                    text = stringResource(profileSetupMessageKeyToStringRes(state.primaryButtonLabelKey)),
+                    onClick = onNextClick,
+                    enabled = state.isPrimaryButtonEnabled && !state.isSubmitting,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
         Spacer(modifier = Modifier.height(8.dp))
     }

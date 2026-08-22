@@ -4,7 +4,7 @@ import SharedLogic
 struct ProfileSetupCycleInfoStep: View {
     let averageCycleLengthDays: String
     let averagePeriodDurationDays: String
-    let cycleRegularity: CycleRegularity?
+    let cycleRegularity: CycleRegularity
     let onCycleLengthChange: (String) -> Void
     let onPeriodDurationChange: (String) -> Void
     let onCycleRegularityChange: (CycleRegularity) -> Void
@@ -36,7 +36,7 @@ struct ProfileSetupCycleInfoStep: View {
             Spacer().frame(height: 8)
             CyraSegmentedToggle(
                 options: Self.allRegularities.map { String(localized: String.LocalizationValue($0.messageKey)) },
-                selectedIndex: cycleRegularity.flatMap { r in Self.allRegularities.firstIndex(of: r) } ?? -1,
+                selectedIndex: Self.allRegularities.firstIndex(of: cycleRegularity) ?? -1,
                 onOptionSelected: { index in onCycleRegularityChange(Self.allRegularities[index]) },
             )
         }

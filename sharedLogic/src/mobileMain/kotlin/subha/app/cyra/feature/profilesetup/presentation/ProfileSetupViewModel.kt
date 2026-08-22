@@ -48,7 +48,16 @@ class ProfileSetupViewModel(
 
     fun onMaritalStatusSelected(value: MaritalStatus) = setState { copy(maritalStatus = value) }
 
-    fun onLastPeriodStartDateChanged(value: LocalDate?) = setState { copy(lastPeriodStartDate = value) }
+    fun onLastPeriodStartDateChanged(value: LocalDate?) = setState {
+        // Picking a real date after having said "I don't remember" supersedes it.
+        copy(lastPeriodStartDate = value, lastPeriodUnknown = false)
+    }
+
+    /** Confirming the "I don't remember" dialog satisfies this mandatory step without an exact date, and moves on immediately - same as tapping "Next" would once valid. */
+    fun onLastPeriodUnknownConfirmed() {
+        setState { copy(lastPeriodUnknown = true) }
+        advanceOrSubmit()
+    }
 
     fun onAverageCycleLengthChanged(value: String) = setState { copy(averageCycleLengthDays = value) }
 
@@ -62,13 +71,13 @@ class ProfileSetupViewModel(
     }
 
     /**
-     * The one button at the bottom of every screen - "Next" (mandatory steps, disabled
-     * until valid), "Skip" (optional steps, always enabled) or "Start My Journey"
-     * ([ProfileSetupStep.AllSet]). Re-validates mandatory steps here even though the UI
-     * already disables the button until valid - same defense-in-depth as
-     * `SignupViewModel.onSignupClicked`.
+     * The single full-width button on mandatory steps (Name, Birthday, Last Period) and
+     * the completion screen ("Start My Journey") - see [ProfileSetupState
+     * .showDualButtons] for the optional steps' separate Skip/Next pair. Re-validates
+     * mandatory steps here even though the UI already disables the button until valid -
+     * same defense-in-depth as `SignupViewModel.onSignupClicked`.
      */
-    fun onPrimaryButtonClicked() {
+    fun onNextClicked() {
         when (currentState.step) {
             ProfileSetupStep.Name -> {
                 val result = ProfileSetupValidators.validateName(currentState.name)
@@ -80,7 +89,29 @@ class ProfileSetupViewModel(
                 setState { copy(submitAttempted = true, dateOfBirthError = result.errorMessageKeyOrNull()) }
                 if (result.errorMessageKeyOrNull() != null) return
             }
-            else -> Unit // every other step (including AllSet) is unconditional
+            ProfileSetupStep.LastPeriod -> {
+                if (!currentState.isPrimaryButtonEnabled) return // UI already disables the button until valid
+            }
+            else -> Unit // the optional steps' own "Next" (see onSkipClicked) and AllSet are unconditional
+        }
+        advanceOrSubmit()
+    }
+
+    /**
+     * The "Skip" half of an optional step's button pair - explicitly discards whatever
+     * that step's field(s) currently hold (even a slider the user already dragged),
+     * unlike that same step's "Next", which keeps it. Only meaningful on steps where
+     * [ProfileSetupState.showDualButtons] is true.
+     */
+    fun onSkipClicked() {
+        when (currentState.step) {
+            ProfileSetupStep.Height -> setState { copy(heightProvided = false) }
+            ProfileSetupStep.Weight -> setState { copy(weightProvided = false) }
+            ProfileSetupStep.MaritalStatus -> setState { copy(maritalStatus = null) }
+            ProfileSetupStep.CycleInfo -> setState {
+                copy(averageCycleLengthDays = "", averagePeriodDurationDays = "", cycleRegularity = CycleRegularity.NotSure)
+            }
+            else -> Unit
         }
         advanceOrSubmit()
     }

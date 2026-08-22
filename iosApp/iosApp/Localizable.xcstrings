@@ -945,12 +945,52 @@
         }
       }
     },
+    "profile_setup_last_period_dont_remember_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No worries!"
+          }
+        }
+      }
+    },
+    "profile_setup_last_period_dont_remember_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It's completely fine not to remember the exact date. Once you start tracking with Cyra, we'll help you build an accurate picture over time — you can always update this later."
+          }
+        }
+      }
+    },
+    "profile_setup_last_period_dont_remember_confirm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK, Continue"
+          }
+        }
+      }
+    },
+    "profile_setup_last_period_dont_remember_cancel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
     "profile_setup_last_period_label" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Last period start date (Optional)"
+            "value" : "Last period start date"
           }
         }
       }
@@ -970,7 +1010,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This helps us predict your cycle. Not sure? You can skip this."
+            "value" : "This helps us predict your cycle. Not sure? Just let us know."
           }
         }
       }

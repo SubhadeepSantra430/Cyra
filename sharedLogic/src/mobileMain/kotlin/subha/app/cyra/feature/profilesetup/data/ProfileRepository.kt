@@ -22,9 +22,14 @@ private data class ProfileDocument(
     val weightKg: Int? = null,
     val maritalStatus: String? = null,
     val lastPeriodStartDate: String? = null,
+    // Set when the user confirmed the "I don't remember" dialog instead of picking a date.
+    val lastPeriodUnknown: Boolean = false,
     val averageCycleLengthDays: Int? = null,
     val averagePeriodDurationDays: Int? = null,
-    val cycleRegularity: String? = null,
+    // Not optional/nullable like the other fields above - "Not sure" is a real, always-
+    // present default answer (see ProfileSetupState.cycleRegularity), so this is always
+    // written, even if the user never touched that step at all.
+    val cycleRegularity: String,
     // A simple completion flag rather than a timestamp - kotlinx.datetime's `Clock` is a
     // deprecated alias for `kotlin.time.Clock` (still `@ExperimentalTime`) as of the
     // version pinned here, and this flag is all a future "skip setup on next login"
@@ -55,9 +60,10 @@ class ProfileRepository(private val firestore: FirebaseFirestore = FirebaseClien
             weightKg = state.weightKg.takeIf { state.weightProvided },
             maritalStatus = state.maritalStatus?.name,
             lastPeriodStartDate = state.lastPeriodStartDate?.toString(),
+            lastPeriodUnknown = state.lastPeriodUnknown,
             averageCycleLengthDays = state.averageCycleLengthDays.trim().toIntOrNull(),
             averagePeriodDurationDays = state.averagePeriodDurationDays.trim().toIntOrNull(),
-            cycleRegularity = state.cycleRegularity?.name,
+            cycleRegularity = state.cycleRegularity.name,
         )
         firestore.collection("users").document(userId).set(document, merge = true)
     }
