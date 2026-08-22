@@ -3,9 +3,18 @@ target 'iosApp' do
   # cleanly (`use_frameworks!` alone fails with a missing gRPC-Core modulemap) -
   # static linkage is Google's own documented requirement for Firestore via CocoaPods.
   use_frameworks! :linkage => :static
-  platform :ios, '13.0'
+  # Bumped from 13.0: GoogleSignIn 8.x's GTMSessionFetcher dependency can't resolve
+  # against a 13.0 floor. The real app target is 18.2 (see project.pbxproj), so this
+  # only raises CocoaPods' own resolution floor, not an actual constraint.
+  platform :ios, '15.0'
 
   pod 'sharedLogic', :path => '../sharedLogic'
+
+  # Native Google Sign-In UI (GIDSignIn) - GitLive's Firebase KMP SDK only wraps
+  # FirebaseAuth's credential-based sign-in, not the OS-level Google Sign-In flow, so
+  # this is a plain CocoaPods dependency on the iosApp target itself, not sharedLogic's
+  # cocoapods {} block.
+  pod 'GoogleSignIn', '~> 8.0'
 end
 
 # CocoaPods defaults the generated Pods.xcodeproj's own project-level deployment
@@ -15,7 +24,7 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
     end
   end
 end
