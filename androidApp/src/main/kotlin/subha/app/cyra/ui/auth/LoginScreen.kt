@@ -10,32 +10,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import subha.app.cyra.R
 import subha.app.cyra.core.presentation.NavigationEvent
-import subha.app.cyra.feature.auth.presentation.AuthEffect
 import subha.app.cyra.feature.auth.presentation.LoginState
 import subha.app.cyra.feature.auth.presentation.LoginViewModel
 import subha.app.cyra.ui.components.CyraBackButton
@@ -47,6 +41,7 @@ import subha.app.cyra.ui.components.CyraSocialButton
 import subha.app.cyra.ui.components.CyraTextField
 import subha.app.cyra.ui.components.EnvelopeIcon
 import subha.app.cyra.ui.components.GoogleIcon
+import subha.app.cyra.ui.components.LocalCyraSnackbarController
 import subha.app.cyra.ui.components.LockIcon
 import subha.app.cyra.ui.theme.CyraTheme
 
@@ -65,24 +60,17 @@ fun LoginScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    var errorMessageKey by remember { mutableStateOf<String?>(null) }
+    val snackbarController = LocalCyraSnackbarController.current
 
-    LaunchedEffect(viewModel) {
-        viewModel.sideEffect.collect { effect ->
-            when (effect) {
-                is AuthEffect.Navigate -> onNavigate(effect.event)
-                is AuthEffect.ShowError -> errorMessageKey = effect.messageKey
-            }
-        }
-    }
+    HandleAuthEffects(sideEffect = viewModel.sideEffect, onNavigate = onNavigate)
 
     fun onGoogleClick() {
         val webClientId = context.getString(R.string.google_web_client_id)
         if (webClientId == GOOGLE_WEB_CLIENT_ID_PLACEHOLDER) {
             // Google Sign-In isn't enabled in Firebase console yet - fail locally
             // instead of ever touching Credential Manager or the ViewModel's shared
-            // side-effect channel (which would race with this directly-set message).
-            errorMessageKey = "auth_error_google_not_configured"
+            // side-effect channel (which would race with this directly-shown message).
+            snackbarController.showError(context.getString(R.string.auth_error_google_not_configured))
             return
         }
         coroutineScope.launch {
@@ -94,7 +82,6 @@ fun LoginScreen(
 
     LoginScreenContent(
         state = state,
-        errorMessage = errorMessageKey?.let { stringResource(messageKeyToStringRes(it)) },
         onBackClick = viewModel::onBackClicked,
         onEmailChange = viewModel::onEmailChanged,
         onPasswordChange = viewModel::onPasswordChanged,
@@ -110,7 +97,6 @@ fun LoginScreen(
 @Composable
 private fun LoginScreenContent(
     state: LoginState,
-    errorMessage: String?,
     onBackClick: () -> Unit,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
@@ -125,6 +111,9 @@ private fun LoginScreenContent(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            // Screens draw edge-to-edge (see MainActivity's enableEdgeToEdge()) - without
+            // this, CyraBackButton (the first child) sits under the status bar.
+            .safeDrawingPadding()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 24.dp),
     ) {
@@ -154,15 +143,6 @@ private fun LoginScreenContent(
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-
-        if (errorMessage != null) {
-            Text(
-                text = errorMessage,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(bottom = 12.dp),
-            )
-        }
 
         CyraTextField(
             value = state.email,
@@ -228,7 +208,6 @@ private fun LoginScreenPreview() {
     CyraTheme {
         LoginScreenContent(
             state = LoginState(),
-            errorMessage = null,
             onBackClick = {},
             onEmailChange = {},
             onPasswordChange = {},

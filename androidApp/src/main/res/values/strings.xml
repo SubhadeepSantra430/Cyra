@@ -67,6 +67,17 @@
     <string name="auth_error_google_not_configured">Google sign-in isn\'t set up yet</string>
     <string name="auth_error_apple_failed">Apple sign-in failed. Please try again</string>
 
+    <!-- Success message keys - shown via the global snackbar, looked up the same way as the error keys above -->
+    <string name="auth_success_login">Welcome back!</string>
+    <string name="auth_success_signup">Account created successfully!</string>
+
+    <!-- Signup's live password checklist - one row per AuthValidators.PasswordRequirement -->
+    <string name="auth_password_requirement_min_length">At least 8 characters</string>
+    <string name="auth_password_requirement_uppercase">One uppercase letter</string>
+    <string name="auth_password_requirement_lowercase">One lowercase letter</string>
+    <string name="auth_password_requirement_digit">One number</string>
+    <string name="auth_password_requirement_special_char">One special character</string>
+
     <!-- Google Sign-In (Credential Manager) web client ID - placeholder until Google
          Sign-In is enabled for this app in Firebase console; NOT the auto-generated
          `default_web_client_id` resource, which doesn't exist until then. -->

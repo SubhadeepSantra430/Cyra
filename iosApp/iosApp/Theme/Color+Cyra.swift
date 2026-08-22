@@ -33,4 +33,6 @@ extension Color {
     // Semantic - not part of the given palette, conventional placeholder
     static let cyraError = rgb(0xEF, 0x44, 0x44) // red-500
     static let cyraOnError = Color.white
+    static let cyraSuccess = rgb(0x22, 0xC5, 0x5E) // green-500
+    static let cyraOnSuccess = Color.white
 }

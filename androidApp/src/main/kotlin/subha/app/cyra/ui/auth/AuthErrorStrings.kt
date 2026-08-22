@@ -5,8 +5,10 @@ import subha.app.cyra.R
 
 /**
  * Maps a `messageKey` from [subha.app.cyra.feature.auth.domain.ValidationResult.Invalid]
- * or `AuthEffect.ShowError` to its Android string resource - keeps the shared domain
- * layer free of any `R.string` reference (it only knows key names).
+ * or `AuthEffect.ShowError`/`AuthEffect.ShowSuccess` to its Android string resource -
+ * keeps the shared domain layer free of any `R.string` reference (it only knows key
+ * names). Despite the file name, this now resolves success keys too - "Error" reflects
+ * this map's original, narrower purpose before `ShowSuccess` existed.
  */
 @StringRes
 fun messageKeyToStringRes(key: String): Int = when (key) {
@@ -24,5 +26,12 @@ fun messageKeyToStringRes(key: String): Int = when (key) {
     "auth_error_google_failed" -> R.string.auth_error_google_failed
     "auth_error_google_not_configured" -> R.string.auth_error_google_not_configured
     "auth_error_apple_failed" -> R.string.auth_error_apple_failed
+    "auth_success_login" -> R.string.auth_success_login
+    "auth_success_signup" -> R.string.auth_success_signup
+    "auth_password_requirement_min_length" -> R.string.auth_password_requirement_min_length
+    "auth_password_requirement_uppercase" -> R.string.auth_password_requirement_uppercase
+    "auth_password_requirement_lowercase" -> R.string.auth_password_requirement_lowercase
+    "auth_password_requirement_digit" -> R.string.auth_password_requirement_digit
+    "auth_password_requirement_special_char" -> R.string.auth_password_requirement_special_char
     else -> R.string.auth_error_generic
 }

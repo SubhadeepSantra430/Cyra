@@ -10,8 +10,8 @@ struct SignupView: View {
 
     @State private var viewModel: SignupViewModel
     @State private var state: SignupState
-    @State private var errorMessageKey: String?
     @State private var appleSignInHelper = AppleSignInHelper()
+    @EnvironmentObject private var snackbarController: CyraSnackbarController
 
     init(onNavigate: @escaping (NavigationEvent) -> Void) {
         self.onNavigate = onNavigate
@@ -45,13 +45,6 @@ struct SignupView: View {
 
                 Spacer().frame(height: 24)
 
-                if let errorMessageKey {
-                    Text(String(localized: String.LocalizationValue(errorMessageKey)))
-                        .font(CyraFont.bodySmall())
-                        .foregroundColor(.cyraError)
-                        .padding(.bottom, 12)
-                }
-
                 CyraTextField(
                     placeholder: String(localized: "auth_email_placeholder"),
                     text: Binding(get: { state.email }, set: viewModel.onEmailChanged),
@@ -71,6 +64,10 @@ struct SignupView: View {
                     errorText: state.passwordError.map { String(localized: String.LocalizationValue($0)) },
                     disabled: state.isBusy,
                 )
+                // Live checklist, Signup's password field only - not confirm-password, not Login.
+                if !state.password.isEmpty {
+                    PasswordRequirementsChecklist(requirements: state.passwordRequirements)
+                }
                 Spacer().frame(height: 16)
                 CyraTextField(
                     placeholder: String(localized: "auth_confirm_password_placeholder"),
@@ -90,13 +87,9 @@ struct SignupView: View {
                     onTermsClick: {},
                     onPrivacyClick: {},
                 )
-                if let termsError = state.termsError {
-                    Text(String(localized: String.LocalizationValue(termsError)))
-                        .font(CyraFont.bodySmall())
-                        .foregroundColor(.cyraError)
-                        .padding(.top, 4)
-                        .padding(.leading, 32)
-                }
+                // No inline error here if terms aren't agreed - unlike the fields above,
+                // there's no adjacent input box for it to sit under, so SignupViewModel
+                // surfaces that failure through the global snackbar instead.
 
                 Spacer().frame(height: 16)
                 Button(String(localized: "auth_sign_up_button"), action: viewModel.onSignupClicked)
@@ -151,16 +144,8 @@ struct SignupView: View {
         }
         .task {
             for await effect in viewModel.sideEffect {
-                handle(effect)
+                handleAuthEffect(effect, onNavigate: onNavigate, snackbarController: snackbarController)
             }
-        }
-    }
-
-    private func handle(_ effect: AuthEffect) {
-        if let navigate = effect as? AuthEffectNavigate {
-            onNavigate(navigate.event)
-        } else if let showError = effect as? AuthEffectShowError {
-            errorMessageKey = showError.messageKey
         }
     }
 
@@ -171,7 +156,7 @@ struct SignupView: View {
                 let result = try await GoogleSignInHelper.signIn(presenting: viewController)
                 viewModel.onGoogleSignInResult(idToken: result.idToken, accessToken: result.accessToken)
             } catch GoogleSignInError.missingClientID {
-                errorMessageKey = "auth_error_google_not_configured"
+                snackbarController.showError(String(localized: "auth_error_google_not_configured"))
             } catch {
                 viewModel.onGoogleSignInFailed()
             }

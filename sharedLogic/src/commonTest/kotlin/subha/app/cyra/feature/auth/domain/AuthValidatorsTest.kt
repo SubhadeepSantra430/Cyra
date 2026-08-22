@@ -73,4 +73,28 @@ class AuthValidatorsTest {
     fun termsNotAgreed_isInvalid() {
         assertEquals("auth_error_terms_required", AuthValidators.validateTermsAgreed(false).errorMessageKeyOrNull())
     }
+
+    @Test
+    fun passwordRequirementStatuses_allSatisfied_whenPasswordIsStrong() {
+        val statuses = AuthValidators.passwordRequirementStatuses("Str0ng!Pass")
+        assertEquals(true, statuses.all { it.satisfied })
+    }
+
+    @Test
+    fun passwordRequirementStatuses_flagsOnlyWhatsMissing() {
+        // Lowercase + digit only - missing uppercase and special char, long enough.
+        val statuses = AuthValidators.passwordRequirementStatuses("longpassword1")
+        val byRequirement = statuses.associate { it.requirement to it.satisfied }
+        assertEquals(true, byRequirement[PasswordRequirement.MIN_LENGTH])
+        assertEquals(true, byRequirement[PasswordRequirement.LOWERCASE])
+        assertEquals(true, byRequirement[PasswordRequirement.DIGIT])
+        assertEquals(false, byRequirement[PasswordRequirement.UPPERCASE])
+        assertEquals(false, byRequirement[PasswordRequirement.SPECIAL_CHAR])
+    }
+
+    @Test
+    fun passwordRequirementStatuses_noneSatisfied_whenPasswordIsEmpty() {
+        val statuses = AuthValidators.passwordRequirementStatuses("")
+        assertEquals(true, statuses.none { it.satisfied })
+    }
 }

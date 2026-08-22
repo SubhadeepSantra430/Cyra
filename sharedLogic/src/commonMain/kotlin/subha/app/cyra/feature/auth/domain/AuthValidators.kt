@@ -39,4 +39,31 @@ object AuthValidators {
 
     fun validateTermsAgreed(agreed: Boolean): ValidationResult =
         if (agreed) ValidationResult.Valid else ValidationResult.Invalid("auth_error_terms_required")
+
+    /**
+     * Same rules as [PASSWORD_REGEX], broken out per-rule so the Signup screen can render
+     * a live checklist (tick/cross per requirement) as the user types, instead of only a
+     * single pass/fail error after submit. [Invalid.messageKey] returns the same
+     * `"auth_error_password_weak"` summary key, so this list is the sole source of truth
+     * for what "weak" means - the two can never drift apart.
+     */
+    fun passwordRequirementStatuses(value: String): List<PasswordRequirementStatus> = listOf(
+        PasswordRequirementStatus(PasswordRequirement.MIN_LENGTH, value.length >= 8),
+        PasswordRequirementStatus(PasswordRequirement.UPPERCASE, value.any { it.isUpperCase() }),
+        PasswordRequirementStatus(PasswordRequirement.LOWERCASE, value.any { it.isLowerCase() }),
+        PasswordRequirementStatus(PasswordRequirement.DIGIT, value.any { it.isDigit() }),
+        PasswordRequirementStatus(PasswordRequirement.SPECIAL_CHAR, value.any { !it.isLetterOrDigit() }),
+    )
 }
+
+/** One rule from [AuthValidators.PASSWORD_REGEX], each with its own string-resource key. */
+enum class PasswordRequirement(val messageKey: String) {
+    MIN_LENGTH("auth_password_requirement_min_length"),
+    UPPERCASE("auth_password_requirement_uppercase"),
+    LOWERCASE("auth_password_requirement_lowercase"),
+    DIGIT("auth_password_requirement_digit"),
+    SPECIAL_CHAR("auth_password_requirement_special_char"),
+}
+
+/** Whether the current password value satisfies one [PasswordRequirement], live as the user types. */
+data class PasswordRequirementStatus(val requirement: PasswordRequirement, val satisfied: Boolean)

@@ -21,6 +21,7 @@ class SignupViewModel(private val repository: AuthRepository) : BaseViewModel<Si
         copy(
             password = value,
             passwordError = if (submitAttempted) AuthValidators.validatePassword(value).errorMessageKeyOrNull() else null,
+            passwordRequirements = AuthValidators.passwordRequirementStatuses(value),
             confirmPasswordError = if (submitAttempted) AuthValidators.validatePasswordsMatch(value, confirmPassword).errorMessageKeyOrNull() else null,
         )
     }
@@ -36,9 +37,7 @@ class SignupViewModel(private val repository: AuthRepository) : BaseViewModel<Si
 
     fun onToggleConfirmPasswordVisibility() = setState { copy(isConfirmPasswordVisible = !isConfirmPasswordVisible) }
 
-    fun onTermsAgreedChanged(agreed: Boolean) = setState {
-        copy(agreedToTerms = agreed, termsError = if (submitAttempted) AuthValidators.validateTermsAgreed(agreed).errorMessageKeyOrNull() else null)
-    }
+    fun onTermsAgreedChanged(agreed: Boolean) = setState { copy(agreedToTerms = agreed) }
 
     fun onLoginLinkClicked() = emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToLogin))
 
@@ -55,8 +54,13 @@ class SignupViewModel(private val repository: AuthRepository) : BaseViewModel<Si
                 emailError = emailResult.errorMessageKeyOrNull(),
                 passwordError = passwordResult.errorMessageKeyOrNull(),
                 confirmPasswordError = confirmResult.errorMessageKeyOrNull(),
-                termsError = termsResult.errorMessageKeyOrNull(),
             )
+        }
+        // Unlike the other fields, "agree to terms" has no adjacent input box to carry an
+        // inline error, so it surfaces through the global snackbar instead.
+        val termsMessageKey = termsResult.errorMessageKeyOrNull()
+        if (termsMessageKey != null) {
+            emitEffect(AuthEffect.ShowError(termsMessageKey))
         }
         val allValid = listOf(emailResult, passwordResult, confirmResult, termsResult).all { it is ValidationResult.Valid }
         if (!allValid) return
@@ -64,7 +68,10 @@ class SignupViewModel(private val repository: AuthRepository) : BaseViewModel<Si
         setState { copy(isSubmitting = true) }
         viewModelScope.launch {
             repository.signup(currentState.email, currentState.password)
-                .onSuccess { emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome)) }
+                .onSuccess {
+                    emitEffect(AuthEffect.ShowSuccess("auth_success_signup"))
+                    emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome))
+                }
                 .onFailure { emitEffect(AuthEffect.ShowError(AuthErrorMapper.toMessageKey(it))) }
             setState { copy(isSubmitting = false) }
         }
@@ -74,7 +81,10 @@ class SignupViewModel(private val repository: AuthRepository) : BaseViewModel<Si
         setState { copy(isGoogleSigningIn = true) }
         viewModelScope.launch {
             repository.signInWithGoogle(idToken, accessToken)
-                .onSuccess { emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome)) }
+                .onSuccess {
+                    emitEffect(AuthEffect.ShowSuccess("auth_success_signup"))
+                    emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome))
+                }
                 .onFailure { emitEffect(AuthEffect.ShowError(AuthErrorMapper.toMessageKey(it))) }
             setState { copy(isGoogleSigningIn = false) }
         }
@@ -86,7 +96,10 @@ class SignupViewModel(private val repository: AuthRepository) : BaseViewModel<Si
         setState { copy(isAppleSigningIn = true) }
         viewModelScope.launch {
             repository.signInWithApple(idToken, rawNonce)
-                .onSuccess { emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome)) }
+                .onSuccess {
+                    emitEffect(AuthEffect.ShowSuccess("auth_success_signup"))
+                    emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome))
+                }
                 .onFailure { emitEffect(AuthEffect.ShowError(AuthErrorMapper.toMessageKey(it))) }
             setState { copy(isAppleSigningIn = false) }
         }

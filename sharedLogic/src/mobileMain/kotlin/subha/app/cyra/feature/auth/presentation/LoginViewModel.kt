@@ -49,7 +49,10 @@ class LoginViewModel(private val repository: AuthRepository) : BaseViewModel<Log
         setState { copy(isSubmitting = true) }
         viewModelScope.launch {
             repository.login(currentState.email, currentState.password)
-                .onSuccess { emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome)) }
+                .onSuccess {
+                    emitEffect(AuthEffect.ShowSuccess("auth_success_login"))
+                    emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome))
+                }
                 .onFailure { emitEffect(AuthEffect.ShowError(AuthErrorMapper.toMessageKey(it))) }
             setState { copy(isSubmitting = false) }
         }
@@ -60,7 +63,10 @@ class LoginViewModel(private val repository: AuthRepository) : BaseViewModel<Log
         setState { copy(isGoogleSigningIn = true) }
         viewModelScope.launch {
             repository.signInWithGoogle(idToken, accessToken)
-                .onSuccess { emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome)) }
+                .onSuccess {
+                    emitEffect(AuthEffect.ShowSuccess("auth_success_login"))
+                    emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome))
+                }
                 .onFailure { emitEffect(AuthEffect.ShowError(AuthErrorMapper.toMessageKey(it))) }
             setState { copy(isGoogleSigningIn = false) }
         }
@@ -72,7 +78,10 @@ class LoginViewModel(private val repository: AuthRepository) : BaseViewModel<Log
         setState { copy(isAppleSigningIn = true) }
         viewModelScope.launch {
             repository.signInWithApple(idToken, rawNonce)
-                .onSuccess { emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome)) }
+                .onSuccess {
+                    emitEffect(AuthEffect.ShowSuccess("auth_success_login"))
+                    emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome))
+                }
                 .onFailure { emitEffect(AuthEffect.ShowError(AuthErrorMapper.toMessageKey(it))) }
             setState { copy(isAppleSigningIn = false) }
         }

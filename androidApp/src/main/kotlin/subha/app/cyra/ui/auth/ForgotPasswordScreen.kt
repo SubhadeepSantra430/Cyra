@@ -7,12 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,7 +21,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import subha.app.cyra.R
 import subha.app.cyra.core.presentation.NavigationEvent
-import subha.app.cyra.feature.auth.presentation.AuthEffect
 import subha.app.cyra.feature.auth.presentation.ForgotPasswordState
 import subha.app.cyra.feature.auth.presentation.ForgotPasswordViewModel
 import subha.app.cyra.ui.components.CyraBackButton
@@ -45,14 +44,9 @@ fun ForgotPasswordScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(viewModel) {
-        viewModel.sideEffect.collect { effect ->
-            when (effect) {
-                is AuthEffect.Navigate -> onNavigate(effect.event)
-                is AuthEffect.ShowError -> Unit // surfaced via state.emailError already for validation; other failures are rare here
-            }
-        }
-    }
+    // Field-level validation still renders via state.emailError; anything else (e.g. a
+    // network failure sending the reset email) now surfaces through the global snackbar.
+    HandleAuthEffects(sideEffect = viewModel.sideEffect, onNavigate = onNavigate)
 
     ForgotPasswordScreenContent(
         state = state,
@@ -75,6 +69,9 @@ private fun ForgotPasswordScreenContent(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            // Screens draw edge-to-edge (see MainActivity's enableEdgeToEdge()) - without
+            // this, CyraBackButton (the first child) sits under the status bar.
+            .safeDrawingPadding()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 24.dp),
     ) {

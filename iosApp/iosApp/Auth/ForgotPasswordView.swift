@@ -8,6 +8,7 @@ struct ForgotPasswordView: View {
 
     @State private var viewModel: ForgotPasswordViewModel
     @State private var state: ForgotPasswordState
+    @EnvironmentObject private var snackbarController: CyraSnackbarController
 
     init(onNavigate: @escaping (NavigationEvent) -> Void) {
         self.onNavigate = onNavigate
@@ -71,11 +72,10 @@ struct ForgotPasswordView: View {
         }
         .task {
             for await effect in viewModel.sideEffect {
-                if let navigate = effect as? AuthEffectNavigate {
-                    onNavigate(navigate.event)
-                }
-                // ShowError isn't surfaced here - validation already renders through
-                // state.emailError, and other failures are rare for this screen.
+                // Field-level validation still renders via state.emailError; anything
+                // else (e.g. a network failure sending the reset email) now surfaces
+                // through the global snackbar.
+                handleAuthEffect(effect, onNavigate: onNavigate, snackbarController: snackbarController)
             }
         }
     }

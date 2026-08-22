@@ -10,8 +10,8 @@ struct LoginView: View {
 
     @State private var viewModel: LoginViewModel
     @State private var state: LoginState
-    @State private var errorMessageKey: String?
     @State private var appleSignInHelper = AppleSignInHelper()
+    @EnvironmentObject private var snackbarController: CyraSnackbarController
 
     init(onNavigate: @escaping (NavigationEvent) -> Void) {
         self.onNavigate = onNavigate
@@ -44,13 +44,6 @@ struct LoginView: View {
                 }
 
                 Spacer().frame(height: 24)
-
-                if let errorMessageKey {
-                    Text(String(localized: String.LocalizationValue(errorMessageKey)))
-                        .font(CyraFont.bodySmall())
-                        .foregroundColor(.cyraError)
-                        .padding(.bottom, 12)
-                }
 
                 CyraTextField(
                     placeholder: String(localized: "auth_email_placeholder"),
@@ -133,16 +126,8 @@ struct LoginView: View {
         }
         .task {
             for await effect in viewModel.sideEffect {
-                handle(effect)
+                handleAuthEffect(effect, onNavigate: onNavigate, snackbarController: snackbarController)
             }
-        }
-    }
-
-    private func handle(_ effect: AuthEffect) {
-        if let navigate = effect as? AuthEffectNavigate {
-            onNavigate(navigate.event)
-        } else if let showError = effect as? AuthEffectShowError {
-            errorMessageKey = showError.messageKey
         }
     }
 
@@ -155,7 +140,7 @@ struct LoginView: View {
             } catch GoogleSignInError.missingClientID {
                 // Google Sign-In isn't enabled in Firebase console yet - fail locally
                 // instead of routing through the ViewModel's generic failure message.
-                errorMessageKey = "auth_error_google_not_configured"
+                snackbarController.showError(String(localized: "auth_error_google_not_configured"))
             } catch {
                 viewModel.onGoogleSignInFailed()
             }

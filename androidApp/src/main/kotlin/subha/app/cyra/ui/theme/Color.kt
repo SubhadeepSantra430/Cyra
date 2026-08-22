@@ -33,3 +33,5 @@ val CyraOutline = Color(0xFFD1D5DB) // gray-300
 // Semantic - not part of the given palette, conventional placeholder
 val CyraError = Color(0xFFEF4444) // red-500
 val CyraOnError = Color(0xFFFFFFFF)
+val CyraSuccess = Color(0xFF22C55E) // green-500
+val CyraOnSuccess = Color(0xFFFFFFFF)

@@ -367,6 +367,56 @@
         }
       }
     },
+    "auth_password_requirement_digit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One number"
+          }
+        }
+      }
+    },
+    "auth_password_requirement_lowercase" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One lowercase letter"
+          }
+        }
+      }
+    },
+    "auth_password_requirement_min_length" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "At least 8 characters"
+          }
+        }
+      }
+    },
+    "auth_password_requirement_special_char" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One special character"
+          }
+        }
+      }
+    },
+    "auth_password_requirement_uppercase" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One uppercase letter"
+          }
+        }
+      }
+    },
     "auth_privacy_link" : {
       "localizations" : {
         "en" : {
@@ -438,6 +488,26 @@
         }
       }
     },
+    "auth_success_login" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome back!"
+          }
+        }
+      }
+    },
+    "auth_success_signup" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account created successfully!"
+          }
+        }
+      }
+    },
     "auth_terms_link" : {
       "localizations" : {
         "en" : {
@@ -468,9 +538,7 @@
         }
       }
     },
-    "Click me!" : {
-
-    },
+    "Click me!" : {},
     "onboarding_get_started" : {
       "localizations" : {
         "en" : {
@@ -567,9 +635,7 @@
         }
       }
     },
-    "SwiftUI: %@" : {
-
-    }
+    "SwiftUI: %@" : {}
   },
   "version" : "1.0"
 }

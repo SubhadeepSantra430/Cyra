@@ -9,18 +9,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,7 +29,6 @@ import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import subha.app.cyra.R
 import subha.app.cyra.core.presentation.NavigationEvent
-import subha.app.cyra.feature.auth.presentation.AuthEffect
 import subha.app.cyra.feature.auth.presentation.SignupState
 import subha.app.cyra.feature.auth.presentation.SignupViewModel
 import subha.app.cyra.ui.components.CyraBackButton
@@ -45,7 +41,9 @@ import subha.app.cyra.ui.components.CyraTermsCheckboxRow
 import subha.app.cyra.ui.components.CyraTextField
 import subha.app.cyra.ui.components.EnvelopeIcon
 import subha.app.cyra.ui.components.GoogleIcon
+import subha.app.cyra.ui.components.LocalCyraSnackbarController
 import subha.app.cyra.ui.components.LockIcon
+import subha.app.cyra.ui.components.PasswordRequirementsChecklist
 import subha.app.cyra.ui.theme.CyraTheme
 
 /**
@@ -62,21 +60,14 @@ fun SignupScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    var errorMessageKey by remember { mutableStateOf<String?>(null) }
+    val snackbarController = LocalCyraSnackbarController.current
 
-    LaunchedEffect(viewModel) {
-        viewModel.sideEffect.collect { effect ->
-            when (effect) {
-                is AuthEffect.Navigate -> onNavigate(effect.event)
-                is AuthEffect.ShowError -> errorMessageKey = effect.messageKey
-            }
-        }
-    }
+    HandleAuthEffects(sideEffect = viewModel.sideEffect, onNavigate = onNavigate)
 
     fun onGoogleClick() {
         val webClientId = context.getString(R.string.google_web_client_id)
         if (webClientId == GOOGLE_WEB_CLIENT_ID_PLACEHOLDER) {
-            errorMessageKey = "auth_error_google_not_configured"
+            snackbarController.showError(context.getString(R.string.auth_error_google_not_configured))
             return
         }
         coroutineScope.launch {
@@ -88,7 +79,6 @@ fun SignupScreen(
 
     SignupScreenContent(
         state = state,
-        errorMessage = errorMessageKey?.let { stringResource(messageKeyToStringRes(it)) },
         onBackClick = viewModel::onBackClicked,
         onEmailChange = viewModel::onEmailChanged,
         onPasswordChange = viewModel::onPasswordChanged,
@@ -106,7 +96,6 @@ fun SignupScreen(
 @Composable
 private fun SignupScreenContent(
     state: SignupState,
-    errorMessage: String?,
     onBackClick: () -> Unit,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
@@ -128,6 +117,9 @@ private fun SignupScreenContent(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            // Screens draw edge-to-edge (see MainActivity's enableEdgeToEdge()) - without
+            // this, CyraBackButton (the first child) sits under the status bar.
+            .safeDrawingPadding()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 24.dp),
     ) {
@@ -158,15 +150,6 @@ private fun SignupScreenContent(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        if (errorMessage != null) {
-            Text(
-                text = errorMessage,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(bottom = 12.dp),
-            )
-        }
-
         CyraTextField(
             value = state.email,
             onValueChange = onEmailChange,
@@ -187,6 +170,10 @@ private fun SignupScreenContent(
             errorText = state.passwordError?.let { stringResource(messageKeyToStringRes(it)) },
             enabled = !state.isBusy,
         )
+        // Live checklist, Signup's password field only - not confirm-password, not Login.
+        if (state.password.isNotEmpty()) {
+            PasswordRequirementsChecklist(requirements = state.passwordRequirements)
+        }
         Spacer(modifier = Modifier.height(16.dp))
         CyraTextField(
             value = state.confirmPassword,
@@ -201,21 +188,15 @@ private fun SignupScreenContent(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+        // No inline error here if terms aren't agreed - unlike the fields above, there's
+        // no adjacent input box for it to sit under, so SignupViewModel surfaces that
+        // failure through the global snackbar instead (see HandleAuthEffects).
         CyraTermsCheckboxRow(
             checked = state.agreedToTerms,
             onCheckedChange = onTermsAgreedChange,
             onTermsClick = onTermsClick,
             onPrivacyClick = onPrivacyClick,
         )
-        val termsError = state.termsError
-        if (termsError != null) {
-            Text(
-                text = stringResource(messageKeyToStringRes(termsError)),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 4.dp, start = 32.dp),
-            )
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
         CyraPrimaryButton(
@@ -255,7 +236,6 @@ private fun SignupScreenPreview() {
     CyraTheme {
         SignupScreenContent(
             state = SignupState(),
-            errorMessage = null,
             onBackClick = {},
             onEmailChange = {},
             onPasswordChange = {},

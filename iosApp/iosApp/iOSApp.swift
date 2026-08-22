@@ -33,6 +33,10 @@ struct CyraRootView: View {
     // TODO(Auth feature): replace with a real session check (e.g. FirebaseClients.shared
     // .auth.currentUser != nil) once app-start persistence exists.
     @State private var isAuthenticated = false
+    // Owns the app-wide snackbar queue - provided here, at the root, so any screen
+    // further down can show a global success/error message (see CyraSnackbar.swift)
+    // without threading a controller reference through every navigation call.
+    @StateObject private var snackbarController = CyraSnackbarController()
 
     var body: some View {
         ZStack {
@@ -61,5 +65,7 @@ struct CyraRootView: View {
             showSplash = false
         }
         .cyraThemed()
+        .environmentObject(snackbarController)
+        .cyraSnackbarHost()
     }
 }
