@@ -33,6 +33,9 @@ struct CyraRootView: View {
     // TODO(Auth feature): replace with a real session check (e.g. FirebaseClients.shared
     // .auth.currentUser != nil) once app-start persistence exists.
     @State private var isAuthenticated = false
+    // Non-nil while a brand-new account is running the post-signup profile-setup flow -
+    // see AuthFlowView's NavigationEventNavigateToOnboarding handling.
+    @State private var profileSetupUserId: String?
     // Owns the app-wide snackbar queue - provided here, at the root, so any screen
     // further down can show a global success/error message (see CyraSnackbar.swift)
     // without threading a controller reference through every navigation call.
@@ -46,10 +49,22 @@ struct CyraRootView: View {
             } else if !onboardingComplete {
                 OnboardingView(onFinished: { onboardingComplete = true })
                     .transition(.opacity)
+            } else if let userId = profileSetupUserId {
+                ProfileSetupView(
+                    userId: userId,
+                    onNavigate: { event in
+                        if event is NavigationEventNavigateToHome {
+                            profileSetupUserId = nil
+                            isAuthenticated = true
+                        }
+                    },
+                )
+                .transition(.opacity)
             } else if !isAuthenticated {
                 AuthFlowView(
                     onAuthenticated: { isAuthenticated = true },
                     onExitAuth: { onboardingComplete = false },
+                    onNeedsProfileSetup: { userId in profileSetupUserId = userId },
                 )
                 .transition(.opacity)
             } else {

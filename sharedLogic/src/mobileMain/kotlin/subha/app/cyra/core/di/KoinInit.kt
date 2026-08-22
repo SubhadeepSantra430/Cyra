@@ -4,6 +4,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 import subha.app.cyra.feature.auth.di.authModule
+import subha.app.cyra.feature.profilesetup.di.profileSetupModule
 
 /**
  * Single entry point both platforms call at app start. [platformModule] is the one
@@ -19,9 +20,10 @@ fun sharedKoinModules(platformModule: Module): List<Module> = listOf(
     platformModule,
     coreModule,
     authModule,
+    profileSetupModule,
     // remaining feature modules are appended here as each one is built, e.g.:
-    // onboardingModule, cycleModule, calendarModule, dailyLogModule,
-    // notificationsModule, aiChatModule, insightsModule, reportsModule, profileModule,
+    // cycleModule, calendarModule, dailyLogModule, notificationsModule, aiChatModule,
+    // insightsModule, reportsModule,
 )
 
 /** Convenience for platforms that don't need extra Koin configuration beyond the modules. */

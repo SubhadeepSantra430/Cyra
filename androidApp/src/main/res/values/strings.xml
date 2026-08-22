@@ -78,6 +78,71 @@
     <string name="auth_password_requirement_digit">One number</string>
     <string name="auth_password_requirement_special_char">One special character</string>
 
+    <!-- Profile setup - the post-signup name/DOB/etc. flow (NavigationEvent.NavigateToOnboarding) -->
+    <string name="profile_setup_category_about_you">About You</string>
+    <string name="profile_setup_category_your_cycle">Your Cycle</string>
+    <string name="profile_setup_button_next">Next</string>
+    <string name="profile_setup_button_skip">Skip</string>
+    <string name="profile_setup_button_start_journey">Start My Journey</string>
+    <string name="profile_setup_date_picker_confirm">OK</string>
+    <string name="profile_setup_date_picker_cancel">Cancel</string>
+
+    <string name="profile_setup_name_title">What\'s your name?</string>
+    <string name="profile_setup_name_subtitle">We\'ll use this to personalize your experience.</string>
+    <string name="profile_setup_name_label">Name</string>
+    <string name="profile_setup_name_placeholder">Enter your name</string>
+
+    <string name="profile_setup_birthday_title">When is your birthday?</string>
+    <string name="profile_setup_birthday_subtitle">Your age helps us provide better insights.</string>
+    <string name="profile_setup_birthday_label">Date of birth</string>
+    <string name="profile_setup_birthday_placeholder">Select your date of birth</string>
+
+    <string name="profile_setup_height_title">What\'s your height?</string>
+    <string name="profile_setup_height_subtitle">Helps us personalize your wellness insights.</string>
+    <string name="profile_setup_height_label">Height</string>
+    <string name="profile_setup_height_placeholder">Enter your height</string>
+
+    <string name="profile_setup_weight_title">What\'s your weight?</string>
+    <string name="profile_setup_weight_subtitle">Helps us personalize your wellness insights.</string>
+    <string name="profile_setup_weight_label">Weight</string>
+    <string name="profile_setup_weight_placeholder">Enter your weight</string>
+
+    <string name="profile_setup_marital_status_title">What\'s your marital status?</string>
+    <string name="profile_setup_marital_status_subtitle">This is optional and helps us personalize your experience.</string>
+    <string name="profile_setup_marital_status_label">Marital status (Optional)</string>
+    <string name="profile_setup_marital_status_single">Single</string>
+    <string name="profile_setup_marital_status_married">Married</string>
+    <string name="profile_setup_marital_status_divorced">Divorced</string>
+    <string name="profile_setup_marital_status_widowed">Widowed</string>
+    <string name="profile_setup_marital_status_prefer_not_to_say">Prefer not to say</string>
+
+    <string name="profile_setup_last_period_title">When did your last period start?</string>
+    <string name="profile_setup_last_period_subtitle">This helps us predict your cycle. Not sure? You can skip this.</string>
+    <string name="profile_setup_last_period_label">Last period start date (Optional)</string>
+    <string name="profile_setup_last_period_placeholder">Select date</string>
+    <string name="profile_setup_last_period_dont_remember">I don\'t remember</string>
+
+    <string name="profile_setup_cycle_info_title">Tell us more about your cycle</string>
+    <string name="profile_setup_cycle_info_subtitle">This information is optional and can be updated later.</string>
+    <string name="profile_setup_cycle_length_label">Average cycle length (Optional)</string>
+    <string name="profile_setup_period_duration_label">Average period duration (Optional)</string>
+    <string name="profile_setup_days_suffix">days</string>
+    <string name="profile_setup_cycle_regularity_label">How is your cycle?</string>
+    <string name="profile_setup_cycle_regularity_regular">Regular</string>
+    <string name="profile_setup_cycle_regularity_irregular">Irregular</string>
+    <string name="profile_setup_cycle_regularity_not_sure">Not sure</string>
+
+    <string name="profile_setup_all_set_title">All set, you\'re ready!</string>
+    <string name="profile_setup_all_set_subtitle">We\'ll personalize your experience based on the information you shared.</string>
+    <string name="profile_setup_all_set_privacy_title">Your data is safe and private</string>
+    <string name="profile_setup_all_set_privacy_subtitle">We respect your privacy and you are in control.</string>
+
+    <!-- Error/success message keys - looked up by ProfileSetupValidators/ProfileSetupEffect's messageKey -->
+    <string name="profile_setup_error_name_required">Please enter your name</string>
+    <string name="profile_setup_error_dob_required">Please select your date of birth</string>
+    <string name="profile_setup_success">Profile saved!</string>
+    <string name="profile_setup_error_save_failed">Couldn\'t save your profile. Please try again</string>
+
     <!-- Google Sign-In (Credential Manager) web client ID - placeholder until Google
          Sign-In is enabled for this app in Firebase console; NOT the auto-generated
          `default_web_client_id` resource, which doesn't exist until then. -->

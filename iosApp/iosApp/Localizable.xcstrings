@@ -635,6 +635,536 @@
         }
       }
     },
+    "profile_setup_all_set_privacy_subtitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We respect your privacy and you are in control."
+          }
+        }
+      }
+    },
+    "profile_setup_all_set_privacy_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your data is safe and private"
+          }
+        }
+      }
+    },
+    "profile_setup_all_set_subtitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We'll personalize your experience based on the information you shared."
+          }
+        }
+      }
+    },
+    "profile_setup_all_set_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All set, you're ready!"
+          }
+        }
+      }
+    },
+    "profile_setup_birthday_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date of birth"
+          }
+        }
+      }
+    },
+    "profile_setup_birthday_placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select your date of birth"
+          }
+        }
+      }
+    },
+    "profile_setup_birthday_subtitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your age helps us provide better insights."
+          }
+        }
+      }
+    },
+    "profile_setup_birthday_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When is your birthday?"
+          }
+        }
+      }
+    },
+    "profile_setup_button_next" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        }
+      }
+    },
+    "profile_setup_button_skip" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        }
+      }
+    },
+    "profile_setup_button_start_journey" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start My Journey"
+          }
+        }
+      }
+    },
+    "profile_setup_category_about_you" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About You"
+          }
+        }
+      }
+    },
+    "profile_setup_category_your_cycle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Cycle"
+          }
+        }
+      }
+    },
+    "profile_setup_cycle_info_subtitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This information is optional and can be updated later."
+          }
+        }
+      }
+    },
+    "profile_setup_cycle_info_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tell us more about your cycle"
+          }
+        }
+      }
+    },
+    "profile_setup_cycle_length_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average cycle length (Optional)"
+          }
+        }
+      }
+    },
+    "profile_setup_cycle_regularity_irregular" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Irregular"
+          }
+        }
+      }
+    },
+    "profile_setup_cycle_regularity_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How is your cycle?"
+          }
+        }
+      }
+    },
+    "profile_setup_cycle_regularity_not_sure" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not sure"
+          }
+        }
+      }
+    },
+    "profile_setup_cycle_regularity_regular" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regular"
+          }
+        }
+      }
+    },
+    "profile_setup_date_picker_cancel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "profile_setup_date_picker_confirm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "profile_setup_days_suffix" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "days"
+          }
+        }
+      }
+    },
+    "profile_setup_error_dob_required" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please select your date of birth"
+          }
+        }
+      }
+    },
+    "profile_setup_error_name_required" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please enter your name"
+          }
+        }
+      }
+    },
+    "profile_setup_error_save_failed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't save your profile. Please try again"
+          }
+        }
+      }
+    },
+    "profile_setup_height_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Height"
+          }
+        }
+      }
+    },
+    "profile_setup_height_placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter your height"
+          }
+        }
+      }
+    },
+    "profile_setup_height_subtitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helps us personalize your wellness insights."
+          }
+        }
+      }
+    },
+    "profile_setup_height_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's your height?"
+          }
+        }
+      }
+    },
+    "profile_setup_last_period_dont_remember" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I don't remember"
+          }
+        }
+      }
+    },
+    "profile_setup_last_period_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last period start date (Optional)"
+          }
+        }
+      }
+    },
+    "profile_setup_last_period_placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select date"
+          }
+        }
+      }
+    },
+    "profile_setup_last_period_subtitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This helps us predict your cycle. Not sure? You can skip this."
+          }
+        }
+      }
+    },
+    "profile_setup_last_period_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When did your last period start?"
+          }
+        }
+      }
+    },
+    "profile_setup_marital_status_divorced" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Divorced"
+          }
+        }
+      }
+    },
+    "profile_setup_marital_status_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marital status (Optional)"
+          }
+        }
+      }
+    },
+    "profile_setup_marital_status_married" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Married"
+          }
+        }
+      }
+    },
+    "profile_setup_marital_status_prefer_not_to_say" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prefer not to say"
+          }
+        }
+      }
+    },
+    "profile_setup_marital_status_single" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Single"
+          }
+        }
+      }
+    },
+    "profile_setup_marital_status_subtitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is optional and helps us personalize your experience."
+          }
+        }
+      }
+    },
+    "profile_setup_marital_status_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's your marital status?"
+          }
+        }
+      }
+    },
+    "profile_setup_marital_status_widowed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widowed"
+          }
+        }
+      }
+    },
+    "profile_setup_name_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
+    },
+    "profile_setup_name_placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter your name"
+          }
+        }
+      }
+    },
+    "profile_setup_name_subtitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We'll use this to personalize your experience."
+          }
+        }
+      }
+    },
+    "profile_setup_name_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's your name?"
+          }
+        }
+      }
+    },
+    "profile_setup_period_duration_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average period duration (Optional)"
+          }
+        }
+      }
+    },
+    "profile_setup_success" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile saved!"
+          }
+        }
+      }
+    },
+    "profile_setup_weight_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weight"
+          }
+        }
+      }
+    },
+    "profile_setup_weight_placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter your weight"
+          }
+        }
+      }
+    },
+    "profile_setup_weight_subtitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helps us personalize your wellness insights."
+          }
+        }
+      }
+    },
+    "profile_setup_weight_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's your weight?"
+          }
+        }
+      }
+    },
     "SwiftUI: %@" : {}
   },
   "version" : "1.0"

@@ -19,6 +19,7 @@ import subha.app.cyra.core.presentation.NavigationEvent
 fun AuthFlow(
     onAuthenticated: () -> Unit,
     onExitAuth: () -> Unit,
+    onNeedsProfileSetup: (userId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var destination by remember { mutableStateOf<AuthDestination>(AuthDestination.Login) }
@@ -36,7 +37,9 @@ fun AuthFlow(
                 AuthDestination.Signup -> destination = AuthDestination.Login
                 AuthDestination.ForgotPassword -> destination = AuthDestination.Login
             }
-            is NavigationEvent.NavigateToOnboarding -> Unit
+            // A brand-new account (email signup, or a first-ever Google/Apple sign-in) -
+            // exit Auth into the profile-setup flow instead of straight home.
+            is NavigationEvent.NavigateToOnboarding -> onNeedsProfileSetup(event.userId)
         }
     }
 

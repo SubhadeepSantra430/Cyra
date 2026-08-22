@@ -68,9 +68,9 @@ class SignupViewModel(private val repository: AuthRepository) : BaseViewModel<Si
         setState { copy(isSubmitting = true) }
         viewModelScope.launch {
             repository.signup(currentState.email, currentState.password)
-                .onSuccess {
+                .onSuccess { isNewUser ->
                     emitEffect(AuthEffect.ShowSuccess("auth_success_signup"))
-                    emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome))
+                    navigateAfterAuth(isNewUser)
                 }
                 .onFailure { emitEffect(AuthEffect.ShowError(AuthErrorMapper.toMessageKey(it))) }
             setState { copy(isSubmitting = false) }
@@ -81,9 +81,9 @@ class SignupViewModel(private val repository: AuthRepository) : BaseViewModel<Si
         setState { copy(isGoogleSigningIn = true) }
         viewModelScope.launch {
             repository.signInWithGoogle(idToken, accessToken)
-                .onSuccess {
+                .onSuccess { isNewUser ->
                     emitEffect(AuthEffect.ShowSuccess("auth_success_signup"))
-                    emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome))
+                    navigateAfterAuth(isNewUser)
                 }
                 .onFailure { emitEffect(AuthEffect.ShowError(AuthErrorMapper.toMessageKey(it))) }
             setState { copy(isGoogleSigningIn = false) }
@@ -96,9 +96,9 @@ class SignupViewModel(private val repository: AuthRepository) : BaseViewModel<Si
         setState { copy(isAppleSigningIn = true) }
         viewModelScope.launch {
             repository.signInWithApple(idToken, rawNonce)
-                .onSuccess {
+                .onSuccess { isNewUser ->
                     emitEffect(AuthEffect.ShowSuccess("auth_success_signup"))
-                    emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome))
+                    navigateAfterAuth(isNewUser)
                 }
                 .onFailure { emitEffect(AuthEffect.ShowError(AuthErrorMapper.toMessageKey(it))) }
             setState { copy(isAppleSigningIn = false) }
@@ -106,4 +106,19 @@ class SignupViewModel(private val repository: AuthRepository) : BaseViewModel<Si
     }
 
     fun onAppleSignInFailed() = emitEffect(AuthEffect.ShowError("auth_error_apple_failed"))
+
+    /**
+     * New account -> the post-signup profile-setup flow (see `NavigationEvent
+     * .NavigateToOnboarding`'s doc comment); existing account (a "new" Google/Apple
+     * credential can still resolve to an existing Firebase user) -> straight home.
+     */
+    private fun navigateAfterAuth(isNewUser: Boolean) {
+        val userId = repository.currentUserId
+        val event = if (isNewUser && userId != null) {
+            NavigationEvent.NavigateToOnboarding(userId)
+        } else {
+            NavigationEvent.NavigateToHome
+        }
+        emitEffect(AuthEffect.Navigate(event))
+    }
 }

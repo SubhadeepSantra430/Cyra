@@ -7,6 +7,7 @@ import SharedLogic
 struct AuthFlowView: View {
     let onAuthenticated: () -> Void
     let onExitAuth: () -> Void
+    let onNeedsProfileSetup: (_ userId: String) -> Void
 
     @State private var destination: AuthDestination = .login
 
@@ -41,6 +42,10 @@ struct AuthFlowView: View {
             case .login: onExitAuth()
             case .signup, .forgotPassword: destination = .login
             }
+        case let onboarding as NavigationEventNavigateToOnboarding:
+            // A brand-new account (email signup, or a first-ever Google/Apple sign-in) -
+            // exit Auth into the profile-setup flow instead of straight home.
+            onNeedsProfileSetup(onboarding.userId)
         default:
             break
         }

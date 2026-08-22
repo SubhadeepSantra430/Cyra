@@ -39,11 +39,17 @@ fun CyraTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    leadingIcon: @Composable () -> Unit,
+    // Nullable - the cycle-length/period-duration fields have no leading icon at all
+    // (a plain field with a trailing "days" label instead), and a non-null empty
+    // lambda would still reserve the icon's layout space, leaving a blank gap.
+    leadingIcon: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier,
     isPassword: Boolean = false,
     isPasswordVisible: Boolean = false,
     onTogglePasswordVisibility: (() -> Unit)? = null,
+    // A trailing unit label, e.g. "days" on the cycle-length/period-duration fields -
+    // mutually exclusive with the password eye-toggle (no field is both).
+    trailingLabel: String? = null,
     errorText: String? = null,
     keyboardType: KeyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text,
     enabled: Boolean = true,
@@ -56,10 +62,10 @@ fun CyraTextField(
             enabled = enabled,
             placeholder = { Text(text = placeholder, style = MaterialTheme.typography.bodyLarge) },
             leadingIcon = leadingIcon,
-            trailingIcon = if (isPassword) {
-                { EyeToggle(isVisible = isPasswordVisible, onClick = { onTogglePasswordVisibility?.invoke() }) }
-            } else {
-                null
+            trailingIcon = when {
+                isPassword -> { { EyeToggle(isVisible = isPasswordVisible, onClick = { onTogglePasswordVisibility?.invoke() }) } }
+                trailingLabel != null -> { { Text(text = trailingLabel, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant) } }
+                else -> null
             },
             isError = errorText != null,
             singleLine = true,

@@ -25,12 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import kotlinx.coroutines.delay
+import subha.app.cyra.core.presentation.NavigationEvent
 import subha.app.cyra.ui.auth.AuthFlow
 import subha.app.cyra.ui.components.CyraPreviews
 import subha.app.cyra.ui.components.CyraSnackbarHost
 import subha.app.cyra.ui.components.LocalCyraSnackbarController
 import subha.app.cyra.ui.components.rememberCyraSnackbarController
 import subha.app.cyra.ui.onboarding.OnboardingScreen
+import subha.app.cyra.ui.profilesetup.ProfileSetupScreen
 import subha.app.cyra.ui.splash.CyraSplashScreen
 import subha.app.cyra.ui.theme.CyraTheme
 
@@ -107,12 +109,25 @@ private fun CyraAppFlow() {
     // TODO(Auth feature): replace with a real session check (e.g. FirebaseClients.auth
     // .currentUser != null) once app-start persistence exists.
     var isAuthenticated by remember { mutableStateOf(false) }
+    // Non-null while a brand-new account is running the post-signup profile-setup flow -
+    // see AuthFlow's NavigationEvent.NavigateToOnboarding handling.
+    var profileSetupUserId by remember { mutableStateOf<String?>(null) }
 
     when {
         !onboardingComplete -> OnboardingScreen(onFinished = { onboardingComplete = true })
+        profileSetupUserId != null -> ProfileSetupScreen(
+            userId = profileSetupUserId!!,
+            onNavigate = { event ->
+                if (event is NavigationEvent.NavigateToHome) {
+                    profileSetupUserId = null
+                    isAuthenticated = true
+                }
+            },
+        )
         !isAuthenticated -> AuthFlow(
             onAuthenticated = { isAuthenticated = true },
             onExitAuth = { onboardingComplete = false },
+            onNeedsProfileSetup = { userId -> profileSetupUserId = userId },
         )
         else -> PlaceholderHomeScreen()
     }

@@ -63,9 +63,9 @@ class LoginViewModel(private val repository: AuthRepository) : BaseViewModel<Log
         setState { copy(isGoogleSigningIn = true) }
         viewModelScope.launch {
             repository.signInWithGoogle(idToken, accessToken)
-                .onSuccess {
+                .onSuccess { isNewUser ->
                     emitEffect(AuthEffect.ShowSuccess("auth_success_login"))
-                    emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome))
+                    navigateAfterAuth(isNewUser)
                 }
                 .onFailure { emitEffect(AuthEffect.ShowError(AuthErrorMapper.toMessageKey(it))) }
             setState { copy(isGoogleSigningIn = false) }
@@ -78,9 +78,9 @@ class LoginViewModel(private val repository: AuthRepository) : BaseViewModel<Log
         setState { copy(isAppleSigningIn = true) }
         viewModelScope.launch {
             repository.signInWithApple(idToken, rawNonce)
-                .onSuccess {
+                .onSuccess { isNewUser ->
                     emitEffect(AuthEffect.ShowSuccess("auth_success_login"))
-                    emitEffect(AuthEffect.Navigate(NavigationEvent.NavigateToHome))
+                    navigateAfterAuth(isNewUser)
                 }
                 .onFailure { emitEffect(AuthEffect.ShowError(AuthErrorMapper.toMessageKey(it))) }
             setState { copy(isAppleSigningIn = false) }
@@ -88,4 +88,22 @@ class LoginViewModel(private val repository: AuthRepository) : BaseViewModel<Log
     }
 
     fun onAppleSignInFailed() = emitEffect(AuthEffect.ShowError("auth_error_apple_failed"))
+
+    /**
+     * Google/Apple sign-in can be tapped from the Login screen but still turn out to be
+     * someone's very first sign-in ever (Firebase auto-creates the account) - route
+     * those into profile-setup exactly like a fresh Signup would, same as
+     * [SignupViewModel.navigateAfterAuth]. Plain email/password login never reaches
+     * this - by definition it's always an existing account, so [onLoginClicked] always
+     * emits `NavigateToHome` directly.
+     */
+    private fun navigateAfterAuth(isNewUser: Boolean) {
+        val userId = repository.currentUserId
+        val event = if (isNewUser && userId != null) {
+            NavigationEvent.NavigateToOnboarding(userId)
+        } else {
+            NavigationEvent.NavigateToHome
+        }
+        emitEffect(AuthEffect.Navigate(event))
+    }
 }

@@ -84,7 +84,12 @@ kotlin {
        minSdk = libs.versions.android.minSdk.get().toInt()
 
        compilerOptions {
-           jvmTarget = JvmTarget.JVM_11
+           // Bumped from 11 - GitLive Firestore's `DocumentReference.set()` (used by
+           // ProfileRepository) is an inline function compiled at JVM target 17;
+           // inlining it into JVM-11 bytecode fails the build ("Cannot inline bytecode
+           // built with JVM target 17 into bytecode that is being built with JVM target
+           // 11"). Kept in sync with androidApp/build.gradle.kts's own jvmTarget.
+           jvmTarget = JvmTarget.JVM_17
        }
        androidResources {
            enable = true

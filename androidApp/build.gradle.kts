@@ -10,7 +10,9 @@ plugins {
 
 kotlin {
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_11
+        // Kept in sync with sharedLogic/build.gradle.kts's jvmTarget - see that file's
+        // comment (GitLive Firestore's inline `set()` requires JVM target 17).
+        jvmTarget = JvmTarget.JVM_17
     }
 }
 dependencies {
@@ -30,6 +32,10 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.splashscreen)
+
+    // sharedLogic depends on this as `implementation` (not `api`), so it isn't visible
+    // transitively - needed directly here for LocalDate in ProfileSetup's date fields.
+    implementation(libs.kotlinx.datetime)
 
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)
@@ -64,8 +70,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true

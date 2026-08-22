@@ -18,23 +18,38 @@ class AuthRepository(private val auth: FirebaseAuth = FirebaseClients.auth) {
     suspend fun login(email: String, password: String): Result<Unit> =
         runCatching { auth.signInWithEmailAndPassword(email, password) }.map {}
 
-    suspend fun signup(email: String, password: String): Result<Unit> =
-        runCatching { auth.createUserWithEmailAndPassword(email, password) }.map {}
+    /**
+     * `true` result is whether this created a brand-new account - always `true` here in
+     * practice (`createUserWithEmailAndPassword` fails with a collision error instead of
+     * succeeding against an existing email), but returning it keeps this signature
+     * uniform with [signInWithGoogle]/[signInWithApple] below, where it's NOT always
+     * true and genuinely needs checking. Callers use it to decide whether to route into
+     * profile-setup ("NavigateToOnboarding") or straight to "NavigateToHome".
+     */
+    suspend fun signup(email: String, password: String): Result<Boolean> =
+        runCatching { auth.createUserWithEmailAndPassword(email, password) }
+            .map { it.additionalUserInfo?.isNewUser == true }
 
     suspend fun sendPasswordReset(email: String): Result<Unit> =
         runCatching { auth.sendPasswordResetEmail(email) }
 
-    /** [accessToken] is optional - Android's Credential Manager flow only yields an ID token. */
-    suspend fun signInWithGoogle(idToken: String, accessToken: String?): Result<Unit> =
+    /**
+     * [accessToken] is optional - Android's Credential Manager flow only yields an ID
+     * token. `true` result: whether Firebase created a brand-new account for this
+     * credential (first-ever Google sign-in) rather than matching an existing one -
+     * Google/Apple sign-in can be tapped from either Login or Signup, so unlike
+     * [signup], this genuinely can go either way and callers must check it.
+     */
+    suspend fun signInWithGoogle(idToken: String, accessToken: String?): Result<Boolean> =
         runCatching {
             auth.signInWithCredential(GoogleAuthProvider.credential(idToken = idToken, accessToken = accessToken))
-        }.map {}
+        }.map { it.additionalUserInfo?.isNewUser == true }
 
-    /** [rawNonce] must be the raw (unhashed) nonce - Firebase re-hashes it to verify against Apple's response. */
-    suspend fun signInWithApple(idToken: String, rawNonce: String): Result<Unit> =
+    /** [rawNonce] must be the raw (unhashed) nonce - Firebase re-hashes it to verify against Apple's response. See [signInWithGoogle] for what the `true` result means. */
+    suspend fun signInWithApple(idToken: String, rawNonce: String): Result<Boolean> =
         runCatching {
             auth.signInWithCredential(
                 OAuthProvider.credential(providerId = "apple.com", idToken = idToken, rawNonce = rawNonce),
             )
-        }.map {}
+        }.map { it.additionalUserInfo?.isNewUser == true }
 }
